@@ -1,7 +1,7 @@
 
 import React from 'react'
 import{ useRef, useEffect, useState } from 'react'
-
+import { useNavigate } from 'react-router-dom'
 import { uploadFile } from "react-s3"
 
 
@@ -10,7 +10,7 @@ const REGION = "us-west-2";
 
 
 export default function Sketch({user}){
-
+    const nav=useNavigate()
     fetch('/api/aws-keys')
         .then(resp=>resp.json())
         .then(data=>{
@@ -18,7 +18,6 @@ export default function Sketch({user}){
             setsak(data.secret_access_key)})
     const [ak, setak]=useState(null)
     const[sak, setsak]=useState(null)
-    console.log(ak, sak)
 
     const config = {
         bucketName: S3_BUCKET,
@@ -104,6 +103,7 @@ export default function Sketch({user}){
                 user_id:user
             })
           })
+          .then(nav('/home'))
     }
    
     return(
