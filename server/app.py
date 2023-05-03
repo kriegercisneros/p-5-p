@@ -1,103 +1,166 @@
 #!/usr/bin/env python3
 
-from flask import Flask, make_response, jsonify, request, session
+from flask import Flask, make_response, jsonify, request, session, send_file
 # from flask_migrate import Migrate
 from model import db, Sketch
 from werkzeug.utils import secure_filename
+# from io import BytesIO
+import io
 
 # from apifetch import new_file_name
 # from dotenv import load_dotenv
 # import os
-from services import app, os, db
+
+from services import app, os, db, requests
 from model import User
+import base64
+
+engine_id='stable-diffusion-xl-beta-v2-2-2'
+api_host = 'https://api.stability.ai'
+api_key = os.environ.get("api_key")
+
+if api_key is None:
+    raise Exception("Missing Stability API key.")
+
+@app.route('/generate-ai', methods=['POST'])
+def generate_ai():
+    #request.data is used to access raw http data from a post request
+    init_image = request.files['name'].read()
+    imf=io.BytesIO(init_image)
+    # print(imf)
+    # print(init_image.read())
+#this is posting to the api through my requests library
+    # init_image_file=BytesIO(init_image)
+    response = requests.post(
+        f"{api_host}/v1/generation/{engine_id}/image-to-image",
+        headers={
+            #is it v1 or v2?
+            "Accept": "application/json",
+            "Authorization": f"Bearer {api_key}"
+        },
+        files={
+            # "init_image": open(init_image, 'r')
+            "init_image":imf
+        },
+        data={
+            "image_strength": 0.001,
+            "init_image_mode": "IMAGE_STRENGTH",
+            "text_prompts[0][text]":"galatic space monkeys",
+            "cfg_scale": 20,
+            "clip_guidance_preset": "FAST_BLUE",
+            "style_preset":"origami",
+            "samples": 1,
+            "steps": 15,
+        }
+    )
+
+    if response.status_code != 200:
+        raise Exception("Non-200 response: " + str(response.text))
+
+    data = response.json()
+
+    for i, image in enumerate(data["artifacts"]):
+        with open(f"./ai_images_download/trial_1.png", "wb") as f:
+            f.write(base64.b64decode(image["base64"]))
+
+    return send_file('./ai_images_download/trial_1.png', mimetype='image/png')
+
+def upload_asw(): 
+    s3=boto3.client('s3')   
+    s3.upload_file(
+        Filename="./ai_images_download/trial_1.png",
+        Bucket="phase-5-images",
+        Key="imagez.png",
+    )
+upload_asw()
 
 ###################################################################################
 # from s3 import generate_upload_url, createConfig
-import hashlib
-import random
-import string
-import boto3
-import os
-from dotenv import load_dotenv
-load_dotenv()
+# import hashlib
+# import random
+# import string
+# import boto3
+# # import os
+# from dotenv import load_dotenv
+# load_dotenv()
 
-from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
 
-s3 = boto3.client(
-    's3',
-    aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
-    aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
-)
-S3_BUCKET_NAME = 'phase-4-bucket-2'
-S3_REGION = 'us-west-2'
+# s3 = boto3.client(
+#     's3',
+#     aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+#     aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
+# )
+# S3_BUCKET_NAME = 'phase-4-bucket-2'
+# S3_REGION = 'us-west-2'
 
-def url():
-    # Generate a unique image name
-    image_name = generate_random_string(16)
+# def url():
+#     # Generate a unique image name
+#     image_name = generate_random_string(16)
 
-    # Set S3 bucket and object key
-    bucket_name = 'phase-4-bucket-2'
-    object_key = image_name
+#     # Set S3 bucket and object key
+#     bucket_name = 'phase-4-bucket-2'
+#     object_key = image_name
 
-    # Set the pre-signed URL expiration time
-    expiration = datetime.now() + timedelta(minutes=1)
+#     # Set the pre-signed URL expiration time
+#     expiration = datetime.now() + timedelta(minutes=1)
 
-    # Generate a pre-signed URL for uploading to S3
-    presigned_url = s3.generate_presigned_url(
-        ClientMethod='put_object',
-        Params={
-            'Bucket': bucket_name,
-            'Key': object_key,
-            'Expires': expiration
-        },
-        HttpMethod='PUT'
-    )
+#     # Generate a pre-signed URL for uploading to S3
+#     presigned_url = s3.generate_presigned_url(
+#         ClientMethod='put_object',
+#         Params={
+#             'Bucket': bucket_name,
+#             'Key': object_key,
+#             'Expires': expiration
+#         },
+#         HttpMethod='PUT'
+#     )
 
-    return presigned_url
+#     return presigned_url
 
-def generate_random_string(length):
-    # Generate a random string of alphanumeric characters
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+# def generate_random_string(length):
+#     # Generate a random string of alphanumeric characters
+#     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
-@app.route('/generate-upload-url', methods=['PUT'])
-def generate_upload_url():
-    try:
-        data = request.get_json()
-        file_name = data['filename']
-        file_type = data['type']
+# @app.route('/generate-upload-url', methods=['PUT'])
+# def generate_upload_url():
+#     try:
+#         data = request.get_json()
+#         file_name = data['filename']
+#         file_type = data['type']
 
-        if not file_name or not file_type:
-            return jsonify({'error': 'File name and type are required'}), 400
+#         if not file_name or not file_type:
+#             return jsonify({'error': 'File name and type are required'}), 400
 
-        # file_name_hash = hashlib.md5(file_name.encode()).hexdigest()
+#         # file_name_hash = hashlib.md5(file_name.encode()).hexdigest()
 
-        # Generate a presigned URL for the S3 upload
-        presigned_post = s3.generate_presigned_post(
-            Bucket=S3_BUCKET_NAME,
-            Key=file_name,
-            Fields={"Content-Type": file_type},
-            Conditions=[
-                {"Content-Type": file_type},
-                {"bucket": S3_BUCKET_NAME},
-                {"acl": "public-read"},
-                ["content-length-range", 0, 10 * 1024 * 1024],
-            ],
-            ExpiresIn=3600
-        )
+#         # Generate a presigned URL for the S3 upload
+#         presigned_post = s3.generate_presigned_post(
+#             Bucket=S3_BUCKET_NAME,
+#             Key=file_name,
+#             Fields={"Content-Type": file_type},
+#             Conditions=[
+#                 {"Content-Type": file_type},
+#                 {"bucket": S3_BUCKET_NAME},
+#                 {"acl": "public-read"},
+#                 ["content-length-range", 0, 10 * 1024 * 1024],
+#             ],
+#             ExpiresIn=3600
+#         )
 
-        # Return the S3 upload URL and form fields
-        return jsonify({
-            'url': presigned_post['url'],
-            'fields': presigned_post['fields']
-        }), 200
+#         # Return the S3 upload URL and form fields
+#         return jsonify({
+#             'url': presigned_post['url'],
+#             'fields': presigned_post['fields']
+#         }), 200
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
-@app.route('/s3Url')
-def get_s3_url():
-    response = url()
-    return jsonify({'url': response}),200
+# @app.route('/s3Url')
+# def get_s3_url():
+#     response = url()
+#     return jsonify({'url': response}),200
     
 ###################################################################################
 
@@ -214,7 +277,6 @@ def posting_sketches():
 @app.route('/aws-keys')
 def get_aws_keys():
     access_key = os.environ.get('AWS_ACCESS_KEY_ID')
-
     secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
     return jsonify({'access_key': access_key, 'secret_access_key': secret_key})
 

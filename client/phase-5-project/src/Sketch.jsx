@@ -30,21 +30,19 @@ export default function Sketch({user}){
     const contextRef=useRef(null)
     const[isDrawing, setIsDrawing]=useState(false)
 
-
-
     useEffect(()=>{
         const canvas = canvasRef.current;
-        // canvas.width=512;
-        // canvas.height=512;
-        // canvas.style.width='512px' ;
-        // canvas.style.height='512px' ;
+        canvas.width=512;
+        canvas.height=512;
+        canvas.style.width='512px' ;
+        canvas.style.height='512px' ;
           // Set the canvas width and height to the window width and height
-        canvas.width = window.innerWidth *2;
-        canvas.height = window.innerHeight *2;
+        // canvas.width = window.innerWidth *2;
+        // canvas.height = window.innerHeight *2;
 
         // Set the canvas style width and height to the window width and height
-        canvas.style.width = `${window.innerWidth}px`;
-        canvas.style.height = `${window.innerHeight}px`;
+        // canvas.style.width = `${window.innerWidth}px`;
+        // canvas.style.height = `${window.innerHeight}px`;
 
         const context=canvas.getContext('2d')
         context.scale(2,2)
@@ -80,16 +78,17 @@ export default function Sketch({user}){
       };
     
       const handleUpload = async (myblob) => {
-        console.log(myblob.type);
+        console.log(myblob);
         // console.log(user)
         const uniqueKey =`sketch-${Date.now()}.png`;
         const fileWithUniqueName = new File([myblob], uniqueKey, { type: myblob.type });
-        console.log(fileWithUniqueName.name)
+        console.log(fileWithUniqueName)
         dbPost(uniqueKey);
         // uploadFile(fileWithUniqueName, {...config, key: uniqueKey})
         uploadFile(fileWithUniqueName, config)
           .then((data) => console.log(data))
           .catch((err) => console.error(err));
+
         // fetch('/generate-upload-url', {
         //     method: 'PUT',
         //     headers: {
@@ -127,9 +126,26 @@ export default function Sketch({user}){
       };
       const saveSketch=()=>{
         const canvas=canvasRef.current
+
         canvas.toBlob((myblob)=>{
             // (setBlob(myblob)), handleUpload(blob)}
-        handleUpload(myblob)}
+            const formData = new FormData();
+            formData.append('name', myblob, 'sketch.png');
+            // console.log(formData.entries())
+            for (var key of formData.entries()) {
+                console.log(key[0] + ', ' + key[1]);
+            }
+            const response = fetch('api/generate-ai', {
+              method: 'POST',
+              body: formData,
+            });
+          
+            if (response.ok) {
+              console.log('Image uploaded successfully');
+            } else {
+              console.error('Image upload failed');
+            }
+            handleUpload(myblob)}
       ), 'image/png'}
 
       //do i have a current user id??  
@@ -149,7 +165,7 @@ export default function Sketch({user}){
     console.log(e.target.value)
    }
 
-   function generateAI(e){
+   function showImage(e){
     e.preventDefault()
     console.log('generating ai')
    }
@@ -157,7 +173,7 @@ export default function Sketch({user}){
         <>
             <div>Sketch</div>
             <canvas
-                style={{ border: '3px solid magenta' }}
+                style={{ border: '6px solid magenta' }}
  
                 onMouseDown={startDrawing}
                 onMouseUp={finishDrawing}
@@ -168,12 +184,12 @@ export default function Sketch({user}){
             {/* <button onClick={saveSketch}>Save Sketch</button> */}
             <div>
                 <div>React S3 File Upload</div>
+                <input type="text" placeholder="prompt" onChange={textChange}></input>
                 <button onClick={saveSketch}>Save Sketch</button>
                 {/* <input type="file" onChange={handleFileInput} /> */}
                 {/* <button onClick={() => handleUpload(selectedFile)}> Upload to S3</button> */}
-                <form onSubmit={generateAI}>
-                    <input type="text" placeholder="prompt" onChange={textChange}></input>
-                    <button type="submit" >generate ai</button>
+                <form onSubmit={showImage}>
+                    <button type="submit" >Show Me the Image!</button>
                 </form>
             </div>
             <div>
