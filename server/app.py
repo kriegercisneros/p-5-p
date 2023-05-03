@@ -211,12 +211,12 @@ def posting_sketches():
 #######################################################################################################
 
 
-# @app.route('/aws-keys')
-# def get_aws_keys():
-#     access_key = os.environ.get('AWS_ACCESS_KEY_ID')
-#     print(access_key)
-#     secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
-#     return jsonify({'access_key': access_key, 'secret_access_key': secret_key})
+@app.route('/aws-keys')
+def get_aws_keys():
+    access_key = os.environ.get('AWS_ACCESS_KEY_ID')
+
+    secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    return jsonify({'access_key': access_key, 'secret_access_key': secret_key})
 
 
 #wtf is this for???????? this was my original testing method that put the text to image data into postgres

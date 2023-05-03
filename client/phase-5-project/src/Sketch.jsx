@@ -1,30 +1,30 @@
 
 import React from 'react'
-import{ useRef, useEffect, useState, useNavigate } from 'react'
-
+import{ useRef, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { uploadFile } from "react-s3"
 
 
-// const S3_BUCKET = "phase-5-images";
-// const REGION = "us-west-2";
+const S3_BUCKET = "phase-5-images";
+const REGION = "us-west-2";
 
 
 export default function Sketch({user}){
     const nav=useNavigate()
-    // fetch('/api/aws-keys')
-    //     .then(resp=>resp.json())
-    //     .then(data=>{
-    //         setak(data.access_key); 
-    //         setsak(data.secret_access_key)})
-    // const [ak, setak]=useState(null)
-    // const[sak, setsak]=useState(null)
+    fetch('/api/aws-keys')
+        .then(resp=>resp.json())
+        .then(data=>{
+            setak(data.access_key); 
+            setsak(data.secret_access_key)})
+    const [ak, setak]=useState(null)
+    const[sak, setsak]=useState(null)
 
-    // const config = {
-    //     bucketName: S3_BUCKET,
-    //     region: REGION, 
-    //     accessKeyId:ak,
-    //     secretAccessKey:sak,
-    // };
+    const config = {
+        bucketName: S3_BUCKET,
+        region: REGION, 
+        accessKeyId:ak,
+        secretAccessKey:sak,
+    };
 
     const canvasRef=useRef(null)
     const contextRef=useRef(null)
@@ -87,9 +87,9 @@ export default function Sketch({user}){
         console.log(fileWithUniqueName.name)
         dbPost(uniqueKey);
         // uploadFile(fileWithUniqueName, {...config, key: uniqueKey})
-        // uploadFile(fileWithUniqueName, config)
-        //   .then((data) => console.log(data))
-        //   .catch((err) => console.error(err));
+        uploadFile(fileWithUniqueName, config)
+          .then((data) => console.log(data))
+          .catch((err) => console.error(err));
         // fetch('/generate-upload-url', {
         //     method: 'PUT',
         //     headers: {
@@ -105,24 +105,24 @@ export default function Sketch({user}){
             
         //     .catch(error => console.error(error));
           
-        function getS3Url() {
-            return fetch('api/s3Url')
-              .then(res => res.json())
-              .then(data => {
-                const url = data.url;
-                console.log(url);
-                return url;
-              })
-              .catch(error => console.error(error));
-          }
+        // function getS3Url() {
+        //     return fetch('api/s3Url')
+        //       .then(res => res.json())
+        //       .then(data => {
+        //         const url = data.url;
+        //         console.log(url);
+        //         return url;
+        //       })
+        //       .catch(error => console.error(error));
+        //   }
           
-          getS3Url().then(url => fetch(url, {
-            method:'PUT', 
-            headers:{
-                "Content-Type": "multipart/form-data"
-            },
-            body: {fileWithUniqueName}
-          }));
+        //   getS3Url().then(url => fetch(url, {
+        //     method:'PUT', 
+        //     headers:{
+        //         "Content-Type": "multipart/form-data"
+        //     },
+        //     body: {fileWithUniqueName}
+        //   }));
         
       };
       const saveSketch=()=>{
@@ -145,7 +145,14 @@ export default function Sketch({user}){
             })
           })
     }
-   
+   function textChange(e){
+    console.log(e.target.value)
+   }
+
+   function generateAI(e){
+    e.preventDefault()
+    console.log('generating ai')
+   }
     return(
         <>
             <div>Sketch</div>
@@ -164,6 +171,13 @@ export default function Sketch({user}){
                 <button onClick={saveSketch}>Save Sketch</button>
                 {/* <input type="file" onChange={handleFileInput} /> */}
                 {/* <button onClick={() => handleUpload(selectedFile)}> Upload to S3</button> */}
+                <form onSubmit={generateAI}>
+                    <input type="text" placeholder="prompt" onChange={textChange}></input>
+                    <button type="submit" >generate ai</button>
+                </form>
+            </div>
+            <div>
+                <p>the s3 bucket image goes here</p>
             </div>
         </>
     )
