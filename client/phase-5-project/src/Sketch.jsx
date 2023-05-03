@@ -1,30 +1,30 @@
 
 import React from 'react'
 import{ useRef, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+
 import { uploadFile } from "react-s3"
 
 
-const S3_BUCKET = "phase-5-images";
-const REGION = "us-west-2";
+// const S3_BUCKET = "phase-5-images";
+// const REGION = "us-west-2";
 
 
 export default function Sketch({user}){
     const nav=useNavigate()
-    fetch('/api/aws-keys')
-        .then(resp=>resp.json())
-        .then(data=>{
-            setak(data.access_key); 
-            setsak(data.secret_access_key)})
-    const [ak, setak]=useState(null)
-    const[sak, setsak]=useState(null)
+    // fetch('/api/aws-keys')
+    //     .then(resp=>resp.json())
+    //     .then(data=>{
+    //         setak(data.access_key); 
+    //         setsak(data.secret_access_key)})
+    // const [ak, setak]=useState(null)
+    // const[sak, setsak]=useState(null)
 
-    const config = {
-        bucketName: S3_BUCKET,
-        region: REGION, 
-        accessKeyId:ak,
-        secretAccessKey:sak,
-    };
+    // const config = {
+    //     bucketName: S3_BUCKET,
+    //     region: REGION, 
+    //     accessKeyId:ak,
+    //     secretAccessKey:sak,
+    // };
 
     const canvasRef=useRef(null)
     const contextRef=useRef(null)
@@ -34,10 +34,17 @@ export default function Sketch({user}){
 
     useEffect(()=>{
         const canvas = canvasRef.current;
-        canvas.width=512;
-        canvas.height=512;
-        canvas.style.width='512px' ;
-        canvas.style.height='512px' ;
+        // canvas.width=512;
+        // canvas.height=512;
+        // canvas.style.width='512px' ;
+        // canvas.style.height='512px' ;
+          // Set the canvas width and height to the window width and height
+        canvas.width = window.innerWidth *2;
+        canvas.height = window.innerHeight *2;
+
+        // Set the canvas style width and height to the window width and height
+        canvas.style.width = `${window.innerWidth}px`;
+        canvas.style.height = `${window.innerHeight}px`;
 
         const context=canvas.getContext('2d')
         context.scale(2,2)
@@ -73,16 +80,50 @@ export default function Sketch({user}){
       };
     
       const handleUpload = async (myblob) => {
-        console.log(myblob.name);
+        console.log(myblob.type);
         // console.log(user)
         const uniqueKey =`sketch-${Date.now()}.png`;
         const fileWithUniqueName = new File([myblob], uniqueKey, { type: myblob.type });
         console.log(fileWithUniqueName.name)
         dbPost(uniqueKey);
         // uploadFile(fileWithUniqueName, {...config, key: uniqueKey})
-        uploadFile(fileWithUniqueName, config)
-          .then((data) => console.log(data))
-          .catch((err) => console.error(err));
+        // uploadFile(fileWithUniqueName, config)
+        //   .then((data) => console.log(data))
+        //   .catch((err) => console.error(err));
+        // fetch('/generate-upload-url', {
+        //     method: 'PUT',
+        //     headers: {
+        //       'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //       filename: fileWithUniqueName.name,
+        //       type: 'image/png'
+        //     })
+        //   })
+        //     .then(response => response.json())
+        //     .then(data => console.log(data)) // This is your presigned URL
+            
+        //     .catch(error => console.error(error));
+          
+        function getS3Url() {
+            return fetch('api/s3Url')
+              .then(res => res.json())
+              .then(data => {
+                const url = data.url;
+                console.log(url);
+                return url;
+              })
+              .catch(error => console.error(error));
+          }
+          
+          getS3Url().then(url => fetch(url, {
+            method:'PUT', 
+            headers:{
+                "Content-Type": "multipart/form-data"
+            },
+            body: {fileWithUniqueName}
+          }));
+        
       };
       const saveSketch=()=>{
         const canvas=canvasRef.current
@@ -103,13 +144,14 @@ export default function Sketch({user}){
                 user_id:user
             })
           })
-          .then(nav('/home'))
     }
    
     return(
         <>
             <div>Sketch</div>
-            <canvas 
+            <canvas
+                style={{ border: '3px solid magenta' }}
+ 
                 onMouseDown={startDrawing}
                 onMouseUp={finishDrawing}
                 onMouseMove={draw}
