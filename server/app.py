@@ -6,6 +6,7 @@ from model import db, Sketch
 from werkzeug.utils import secure_filename
 # from io import BytesIO
 import io
+import boto3
 
 # from apifetch import new_file_name
 # from dotenv import load_dotenv
@@ -63,6 +64,7 @@ def generate_ai():
         with open(f"./ai_images_download/trial_1.png", "wb") as f:
             f.write(base64.b64decode(image["base64"]))
 
+    upload_asw()
     return send_file('./ai_images_download/trial_1.png', mimetype='image/png')
 
 def upload_asw(): 
@@ -72,7 +74,6 @@ def upload_asw():
         Bucket="phase-5-images",
         Key="imagez.png",
     )
-upload_asw()
 
 ###################################################################################
 # from s3 import generate_upload_url, createConfig
