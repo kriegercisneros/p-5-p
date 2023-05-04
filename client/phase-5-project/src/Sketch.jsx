@@ -3,13 +3,27 @@ import React from 'react'
 import{ useRef, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { uploadFile } from "react-s3"
-
-
+// import image from "../../server/ai_images_download/trial_1.png"
+import trial_1 from "../../../server/ai_images_download/trial_1.png"
 const S3_BUCKET = "phase-5-images";
 const REGION = "us-west-2";
 
 
 export default function Sketch({user}){
+    const [img, setimg]=useState(false)
+    const [imgfn,setimgfn]=useState('')
+    const [workingAiImg, setWorkingAiImg]=useState(trial_1)
+    //not sure if i even need this state above or the state below
+    const [sketch, setSketch]=useState('')
+    
+    const [sketchid, setsketchid]=useState ('')
+    const [imgid, setimgid]=useState('')
+    //this one captures the state that i need so user id can persist
+    //between refreshes
+    const [userid, setUserid]=useState(undefined)
+    console.log(userid)
+    console.log(imgfn)
+
     const nav=useNavigate()
     fetch('/api/aws-keys')
         .then(resp=>resp.json())
@@ -29,6 +43,22 @@ export default function Sketch({user}){
     const canvasRef=useRef(null)
     const contextRef=useRef(null)
     const[isDrawing, setIsDrawing]=useState(false)
+
+    useEffect(()=>{
+        fetch('/api/imagesession')
+        .then(r=>r.json())
+        .then(data=>{
+            setimgfn(data['message'])
+            })
+    }, [])
+
+    useEffect(()=>{
+        fetch('api/info')
+        .then(r=>r.json())
+        .then(data=>{
+            setUserid(data['id'])
+        })
+    }, [])
 
     useEffect(()=>{
         const canvas = canvasRef.current;
@@ -75,15 +105,17 @@ export default function Sketch({user}){
         const context = canvas.getContext("2d");
         context.fillStyle = "white";
         context.fillRect(0, 0, canvas.width, canvas.height);
-      };
+    };
     
-      const handleUpload = async (myblob) => {
+    const handleUpload = async (myblob) => {
         console.log(myblob);
         // console.log(user)
         const uniqueKey =`sketch-${Date.now()}.png`;
+        // setSketch(uniqueKey)
         const fileWithUniqueName = new File([myblob], uniqueKey, { type: myblob.type });
         console.log(fileWithUniqueName)
         dbPost(uniqueKey);
+        // getsketchid()
         // uploadFile(fileWithUniqueName, {...config, key: uniqueKey})
         uploadFile(fileWithUniqueName, config)
           .then((data) => console.log(data))
@@ -123,33 +155,32 @@ export default function Sketch({user}){
         //     body: {fileWithUniqueName}
         //   }));
         
-      };
-      const saveSketch=()=>{
+    };
+    const saveSketch=()=>{
         const canvas=canvasRef.current
-
+        setimg(false)
+        //taking the canvas image and converting it into a blob
         canvas.toBlob((myblob)=>{
-            // (setBlob(myblob)), handleUpload(blob)}
             const formData = new FormData();
             formData.append('name', myblob, 'sketch.png');
-            // console.log(formData.entries())
-            for (var key of formData.entries()) {
-                console.log(key[0] + ', ' + key[1]);
-            }
+            //i need to handle upload of the sketch image to the db and aws
+            handleUpload(myblob);
             const response = fetch('api/generate-ai', {
-              method: 'POST',
-              body: formData,
+                method: 'POST',
+                body: formData,
             });
-          
             if (response.ok) {
-              console.log('Image uploaded successfully');
+                console.log('Image uploaded successfully');
             } else {
-              console.error('Image upload failed');
+                console.error('Image upload failed');
             }
-            handleUpload(myblob)}
-      ), 'image/png'}
+            //this needs to execute AFTER the ai image is generated and stored in the local
+            //file. 
+            setWorkingAiImg(trial_1)}
+        ), 'image/png'}
 
-      //do i have a current user id??  
-      const dbPost = (uniqueKey) =>{
+
+    const dbPost = (uniqueKey) =>{
         fetch('api/posting_sketches', {
             method: 'POST',
             headers: {
@@ -161,20 +192,75 @@ export default function Sketch({user}){
             })
           })
     }
-   function textChange(e){
-    console.log(e.target.value)
-   }
+    //this calls from within handle up load in order to get the current
+    //sketch id so that i can post to the instances table
+    // function getsketchid(){
+    //     fetch('api/fetchsketchid', {
+    //         method: 'POST',
+    //         headers: {
+    //           'Content-Type': 'application/json'
+    //         }, 
+    //         body: JSON.stringify({
+    //             filename:sketch
+    //         })
+    //       })
+    //       .then(r=>r.json())
+    //       .then(data=>setsketchid(data.sketch_id))
+    // }
 
-   function showImage(e){
-    e.preventDefault()
-    console.log('generating ai')
-   }
+    function textChange(e){
+        console.log(e.target.value)
+    }
+
+    function showImage(e){
+        e.preventDefault()
+        setimg(true)
+        console.log('show ai image')
+    }
+    function saveImage(){
+        console.log(userid)
+        fetch('api/saveimage', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({
+                user_id:userid,
+                original_filename:'ofn',
+                filename:imgfn,
+                bucket:'phase-5-images',
+                region:'us-west-2'
+            })
+        })
+        .then(r=>r.json())
+        // //make state here for id
+        .then(data=>{console.log(data)
+            setimgid(data.id)})
+        //     console.log(data)
+        //     setimgid(data.id)
+        // })
+        // saveInstance()
+        // console.log('saving image')
+    }
+    // function saveInstance(){
+    //     fetch('api/saveimage', {
+    //         method: 'POST',
+    //         headers:{
+    //             'Content-Type': 'application/json'
+    //         }, 
+    //         body: JSON.stringify({
+    //             user_id:user,
+    //             images_id: imgfn,
+    //             sketches_id:imgfn
+    //         })
+    //     })
+    // }
+
     return(
         <>
             <div>Sketch</div>
             <canvas
                 style={{ border: '6px solid magenta' }}
- 
                 onMouseDown={startDrawing}
                 onMouseUp={finishDrawing}
                 onMouseMove={draw}
@@ -188,13 +274,15 @@ export default function Sketch({user}){
                 <button onClick={saveSketch}>Save Sketch</button>
                 {/* <input type="file" onChange={handleFileInput} /> */}
                 {/* <button onClick={() => handleUpload(selectedFile)}> Upload to S3</button> */}
-                <form onSubmit={showImage}>
-                    <button type="submit" >Show Me the Image!</button>
-                </form>
+                <button onClick={showImage}>Show Me the Image!</button>
             </div>
-            <div>
-                <p>the s3 bucket image goes here</p>
-            </div>
+            {img ? 
+            (<div>
+                <img src={trial_1}/>
+                <br></br>
+                <button onClick={saveImage}>save image</button>
+            </div>):(<p>show image</p>)
+            }
         </>
     )
 }

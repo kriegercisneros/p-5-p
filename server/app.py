@@ -13,7 +13,7 @@ import boto3
 # import os
 
 from services import app, os, db, requests
-from model import User
+from model import User, Image, Sketch
 import base64
 
 engine_id='stable-diffusion-xl-beta-v2-2-2'
@@ -26,6 +26,8 @@ if api_key is None:
 @app.route('/generate-ai', methods=['POST'])
 def generate_ai():
     #request.data is used to access raw http data from a post request
+    # img=session.get('image_filename')
+    session.pop('image_filename')
     init_image = request.files['name'].read()
     imf=io.BytesIO(init_image)
     # print(imf)
@@ -54,7 +56,6 @@ def generate_ai():
             "steps": 15,
         }
     )
-
     if response.status_code != 200:
         raise Exception("Non-200 response: " + str(response.text))
 
@@ -69,11 +70,69 @@ def generate_ai():
 
 def upload_asw(): 
     s3=boto3.client('s3')   
+    session['image_filename']="img1.png"
     s3.upload_file(
         Filename="./ai_images_download/trial_1.png",
         Bucket="phase-5-images",
-        Key="imagez.png",
+        Key="img1.png",
     )
+
+@app.route('/imagesession')
+def imagesession():
+    image_sesh=session.get('image_filename')
+    print(session)
+    if not image_sesh:
+        return jsonify({"error":"unauthorized"}), 401
+    return jsonify({
+        "message":image_sesh
+    })
+
+@app.route('/saveimage', methods=['POST'])
+def saveimage():
+    print('image saved')
+    # filename=request.json['filename']
+    # file_exist = Image.query.filter(Image.filename==filename).first()
+    # if file_exist is not None:
+    #     return jsonify({'error':'image already exists'}), 409
+    data=request.get_json()
+    # print(data)
+    try:
+        image = Image(
+            filename=data['filename'],
+            user_id=data['user_id'],
+            original_filename=data['original_filename'],
+            bucket=data['bucket'],
+            region=data['region'],
+            # filename=filename
+            )
+        print(image)
+        db.session.add(image)
+        db.session.commit()
+        return make_response({"message":"success"}, 201)
+    except Exception as e:
+        return make_response({"errors": str(e)}, 422)
+
+
+
+@app.route('/fetchsketchid')
+def fetchsketchid():
+    filename=request.json['filename']
+    right_sketch = Sketch.query.filter(Sketch.filename==filename).first()
+    sketch_id=right_sketch.id
+    return make_response(jsonify(sketch_id), 200)
+
+@app.route('/saveinstance', methods=['POST'])
+def saveinstance():
+    pass
+    # i need to first fetch based on the current user_id to the table with sketches and the 
+    #table with images to retrieve the id's for those respectively and store them in state.  
+    #this should happen when i post the sketch (save sketch) and when i post the image (save image)
+    #with in these functions I will call other functions that make an api end point call to get the 
+    #sketch with the name i have currently saved in state (imgfn and sketch).  Then I will 
+    #save the sketch_id and the image_id in session, then pass the session up 
+    # to store it in state.  from there, i will pass the state to another api 
+    #endpoint to post to the instances table with the sketch_id and the image_id
+
 
 ###################################################################################
 # from s3 import generate_upload_url, createConfig
@@ -266,9 +325,14 @@ def posting_sketches():
         )
         db.session.add(sketch)
         db.session.commit()
-        return jsonify({'success': True})
+        
+        sketch_id=sketch.id
+
+        return jsonify({'success': True, 'id':sketch_id})
     except:
         return jsonify({'success': False})
+    
+
 
 #######################################################################################################
 ###########                         fetching access keys for aws                            ###########

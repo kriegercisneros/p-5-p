@@ -23,7 +23,7 @@ class User(db.Model, SerializerMixin):
     username=db.Column(db.String)
 
     sketches=db.relationship("Sketch", backref='users_backref')
-    images=db.relationship("Img", backref='users_backref')
+    images=db.relationship("Image", backref='users_backref')
 
     @hybrid_property
     def password_hash(self):
@@ -39,7 +39,7 @@ class User(db.Model, SerializerMixin):
     def authenticate(self, password):
         return bcrypted.check_password_hash(self.password_hash, password.encode('utf-8'))
     
-class Img(db.Model):
+class Image(db.Model):
     __tablename__='images'
 
     serialize_rules=('-users_backref',)
