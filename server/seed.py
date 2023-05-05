@@ -2,7 +2,7 @@
 
 # from app import app
 from services import db,app
-from model import Image, User, Sketch
+from model import Image, User, Sketch, Instance
 
 # from faker import Faker
 # from random import randint
@@ -10,6 +10,7 @@ from model import Image, User, Sketch
 
 with app.app_context():
     print("Deleting Images...")
+    Instance.query.delete()
     Sketch.query.delete()
     Image.query.delete()
     User.query.delete()

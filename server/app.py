@@ -7,13 +7,14 @@ from werkzeug.utils import secure_filename
 # from io import BytesIO
 import io
 import boto3
-
+import datetime
+import uuid
 # from apifetch import new_file_name
 # from dotenv import load_dotenv
 # import os
 
 from services import app, os, db, requests
-from model import User, Image, Sketch
+from model import User, Image, Sketch, Instance
 import base64
 
 engine_id='stable-diffusion-xl-beta-v2-2-2'
@@ -69,12 +70,14 @@ def generate_ai():
     return send_file('./ai_images_download/trial_1.png', mimetype='image/png')
 
 def upload_asw(): 
-    s3=boto3.client('s3')   
-    session['image_filename']="img1.png"
+    s3=boto3.client('s3')
+    uniqueimagename=f"{uuid.uuid4().hex}.png"
+    print(uniqueimagename)  
+    session['image_filename']=uniqueimagename
     s3.upload_file(
         Filename="./ai_images_download/trial_1.png",
         Bucket="phase-5-images",
-        Key="img1.png",
+        Key=uniqueimagename,
     )
 
 @app.route('/imagesession')
@@ -108,22 +111,35 @@ def saveimage():
         print(image)
         db.session.add(image)
         db.session.commit()
-        return make_response({"message":"success"}, 201)
+        image_id=image.id
+        return make_response({"image_id":image_id}, 201)
     except Exception as e:
         return make_response({"errors": str(e)}, 422)
 
 
 
-@app.route('/fetchsketchid')
-def fetchsketchid():
-    filename=request.json['filename']
-    right_sketch = Sketch.query.filter(Sketch.filename==filename).first()
-    sketch_id=right_sketch.id
-    return make_response(jsonify(sketch_id), 200)
+# @app.route('/fetchsketchid')
+# def fetchsketchid():
+#     filename=request.json['filename']
+#     right_sketch = Sketch.query.filter(Sketch.filename==filename).first()
+#     sketch_id=right_sketch.id
+#     return make_response(jsonify(sketch_id), 200)
 
 @app.route('/saveinstance', methods=['POST'])
 def saveinstance():
-    pass
+    data=request.get_json()
+    print(data)
+    try:
+        inst=Instance(
+            users_id=data['user_id'],
+            sketches_id=data['sketches_id'],
+            images_id=data['images_id']
+        )
+        db.session.add(inst)
+        db.session.commit()
+        return make_response({"message":"instance post success"}, 201)
+    except Exception as e:
+        return make_response({"errors": str(e)}, 422)
     # i need to first fetch based on the current user_id to the table with sketches and the 
     #table with images to retrieve the id's for those respectively and store them in state.  
     #this should happen when i post the sketch (save sketch) and when i post the image (save image)
@@ -325,10 +341,10 @@ def posting_sketches():
         )
         db.session.add(sketch)
         db.session.commit()
-        
         sketch_id=sketch.id
+        print(sketch_id)
 
-        return jsonify({'success': True, 'id':sketch_id})
+        return jsonify({'success': True, 'sketch_id':sketch_id})
     except:
         return jsonify({'success': False})
     
