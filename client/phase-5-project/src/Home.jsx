@@ -32,6 +32,7 @@ function Home({user, setUser}){
         <h1>Home, {user}</h1>
         <button onClick={handleLogout}>Logout</button>
         <button onClick={()=>nav('/sketch')}>Sketch</button>
+        <button onClick={()=>nav('/view')}>View Past Instances</button>
         </div>
       );
 }

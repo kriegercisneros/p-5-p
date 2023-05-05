@@ -140,14 +140,45 @@ def saveinstance():
         return make_response({"message":"instance post success"}, 201)
     except Exception as e:
         return make_response({"errors": str(e)}, 422)
-    # i need to first fetch based on the current user_id to the table with sketches and the 
-    #table with images to retrieve the id's for those respectively and store them in state.  
-    #this should happen when i post the sketch (save sketch) and when i post the image (save image)
-    #with in these functions I will call other functions that make an api end point call to get the 
-    #sketch with the name i have currently saved in state (imgfn and sketch).  Then I will 
-    #save the sketch_id and the image_id in session, then pass the session up 
-    # to store it in state.  from there, i will pass the state to another api 
-    #endpoint to post to the instances table with the sketch_id and the image_id
+
+@app.route('/instances/<int:users_id>')
+def get_instances_by_user_id(users_id):
+    instances = Instance.query.filter_by(users_id=users_id).all()
+    instances_list = []
+    for i in instances:
+        instance_dict = {
+            'id': i.id,
+            'user_id': i.users_id,
+            'sketch_id': i.sketches_id,
+            'image_id': i.images_id
+        }
+        instances_list.append(instance_dict)
+    return jsonify(instances=instances_list)
+
+@app.route('/images/<int:image_id>')
+def get_image(image_id):
+    image = Image.query.get(image_id)
+    if image:
+        filename = image.filename
+        print(filename)
+        # Do something with the filename, such as displaying the sketch image on a web page
+        return make_response({"filename": filename})
+    else:
+        return make_response({"message": "Sketch not found"}, 404)
+
+@app.route('/sketches/<int:sketch_id>')
+def get_sketch(sketch_id):
+    sketch = Sketch.query.get(sketch_id)
+    if sketch:
+        filename = sketch.filename
+        print(filename)
+        # Do something with the filename, such as displaying the sketch image on a web page
+        return make_response({"filename": filename})
+    else:
+        return make_response({"message": "Sketch not found"}, 404)
+
+
+
 
 
 ###################################################################################
