@@ -15,15 +15,20 @@ export default function Sketch({user}){
     const [workingAiImg, setWorkingAiImg]=useState(trial_1)
     //not sure if i even need this state above or the state below
     const [sketch, setSketch]=useState('')
-    
-    const [sketchid, setsketchid]=useState ('')
-    const [imgid, setimgid]=useState('')
+    //sketchid=state of the sketch id that was just posted
+    const [sketchid, setsketchid]=useState (undefined)
+    //imgid=state of the image id that was just posted
+    // const [imgid, setimgid]=useState(undefined)
     //this one captures the state that i need so user id can persist
     //between refreshes
     const [userid, setUserid]=useState(undefined)
+
+    const[updatedimg, setupdatedimg]=useState(false)
+
     console.log(userid)
     console.log(imgfn)
-
+    // console.log(imgid)
+    console.log(sketchid)
     const nav=useNavigate()
     fetch('/api/aws-keys')
         .then(resp=>resp.json())
@@ -169,8 +174,12 @@ export default function Sketch({user}){
                 method: 'POST',
                 body: formData,
             });
-            if (response.ok) {
-                console.log('Image uploaded successfully');
+            if(response){
+                console.log('saved sketch')
+                fetch('/api/imagesession')
+                    .then(r=>r.json())
+                    .then(data=>{setimgfn(data['message'])})
+                    .then(console.log('Image uploaded successfully'));
             } else {
                 console.error('Image upload failed');
             }
@@ -191,6 +200,8 @@ export default function Sketch({user}){
                 user_id:user
             })
           })
+          .then(r=>r.json())
+          .then(data=>{setsketchid(data.sketch_id)})
     }
     //this calls from within handle up load in order to get the current
     //sketch id so that i can post to the instances table
@@ -233,28 +244,26 @@ export default function Sketch({user}){
             })
         })
         .then(r=>r.json())
-        // //make state here for id
-        .then(data=>{console.log(data)
-            setimgid(data.id)})
-        //     console.log(data)
-        //     setimgid(data.id)
-        // })
-        // saveInstance()
-        // console.log('saving image')
+        .then(data=>{saveInstance(data.image_id); setupdatedimg(true)})
     }
-    // function saveInstance(){
-    //     fetch('api/saveimage', {
-    //         method: 'POST',
-    //         headers:{
-    //             'Content-Type': 'application/json'
-    //         }, 
-    //         body: JSON.stringify({
-    //             user_id:user,
-    //             images_id: imgfn,
-    //             sketches_id:imgfn
-    //         })
-    //     })
-    // }
+    if(updatedimg){nav("/view")}
+
+    function saveInstance(imgid){
+        fetch('api/saveinstance', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({
+                user_id:userid,
+                images_id: imgid,
+                sketches_id:sketchid,
+                test:"stringtest"
+            })
+        })
+        .then(r=>r.json())
+        .then(data=>console.log(data))
+    }
 
     return(
         <>
