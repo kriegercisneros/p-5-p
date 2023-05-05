@@ -146,11 +146,14 @@ def get_instances_by_user_id(users_id):
     instances = Instance.query.filter_by(users_id=users_id).all()
     instances_list = []
     for i in instances:
+        # print(f"thisit{i.images.to_dict()}")
         instance_dict = {
             'id': i.id,
             'user_id': i.users_id,
             'sketch_id': i.sketches_id,
-            'image_id': i.images_id
+            'image_id': i.images_id, 
+            'images':i.images.to_dict(), 
+            'sketches':i.sketches.to_dict()
         }
         instances_list.append(instance_dict)
     return jsonify(instances=instances_list)

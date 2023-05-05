@@ -39,10 +39,10 @@ class User(db.Model, SerializerMixin):
     def authenticate(self, password):
         return bcrypted.check_password_hash(self.password_hash, password.encode('utf-8'))
     
-class Image(db.Model):
+class Image(db.Model, SerializerMixin):
     __tablename__='images'
 
-    serialize_rules=('-users_backref',)
+    serialize_rules=('-users_backref','-instance_backref.images',)
 
     id=db.Column(db.Integer, primary_key=True)
     user_id=db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -55,7 +55,7 @@ class Image(db.Model):
 class Sketch(db.Model, SerializerMixin):
     __tablename__='sketches'
 
-    serialize_rules=('-users_backref',)
+    serialize_rules=('-users_backref','-instance_backref.sketches',)
 
     id = db.Column(db.Integer, primary_key=True)
     user_id=db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -67,11 +67,14 @@ class Sketch(db.Model, SerializerMixin):
 class Instance(db.Model, SerializerMixin):
     __tablename__='instances'
 
-    serialize_rules=('-users_backref',)
+    serialize_rules=('-users_backref','-images.instance_backref','-sketches.instance_backref',)
 
     id = db.Column(db.Integer, primary_key=True)
     images_id=db.Column(db.Integer, db.ForeignKey('images.id'))
     sketches_id=db.Column(db.Integer, db.ForeignKey('sketches.id'))
     users_id= db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    sketches=db.Relationship("Sketch", backref='instance_backref')
+    images=db.Relationship("Image", backref='instance_backref')
 
 
