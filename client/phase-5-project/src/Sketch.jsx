@@ -80,10 +80,10 @@ export default function Sketch({user}){
         // canvas.style.height = `${window.innerHeight}px`;
 
         const context=canvas.getContext('2d')
-        context.scale(1,1)
+        context.scale(2,2)
         context.lineCap = 'round'
         context.strokeStyle = 'black'
-        context.lineWidth = 2
+        context.lineWidth = 5
         contextRef.current = context
     }, [])
     const startDrawing=({nativeEvent})=>{
