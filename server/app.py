@@ -27,8 +27,9 @@ if api_key is None:
 @app.route('/generate-ai', methods=['POST'])
 def generate_ai():
     #request.data is used to access raw http data from a post request
-    # img=session.get('image_filename')
-    session.pop('image_filename')
+    img=session.get('image_filename')
+    if(img):
+        session.pop('image_filename')
     init_image = request.files['name'].read()
     imf=io.BytesIO(init_image)
     # print(imf)

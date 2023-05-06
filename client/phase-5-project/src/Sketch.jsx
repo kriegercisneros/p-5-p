@@ -80,10 +80,10 @@ export default function Sketch({user}){
         // canvas.style.height = `${window.innerHeight}px`;
 
         const context=canvas.getContext('2d')
-        context.scale(2,2)
+        context.scale(1,1)
         context.lineCap = 'round'
         context.strokeStyle = 'black'
-        context.lineWidth = 5
+        context.lineWidth = 2
         contextRef.current = context
     }, [])
     const startDrawing=({nativeEvent})=>{
@@ -174,7 +174,7 @@ export default function Sketch({user}){
                 method: 'POST',
                 body: formData,
             });
-            if(response){
+            if(response.ok){
                 console.log('saved sketch')
                 fetch('/api/imagesession')
                     .then(r=>r.json())
@@ -244,9 +244,9 @@ export default function Sketch({user}){
             })
         })
         .then(r=>r.json())
-        .then(data=>{saveInstance(data.image_id); setupdatedimg(true)})
+        .then(data=>{saveInstance(data.image_id); setupdatedimg(true); if(updatedimg){nav("/view")}})
     }
-    if(updatedimg){nav("/view")}
+    // if(updatedimg){nav("/view")}
 
     function saveInstance(imgid){
         fetch('api/saveinstance', {
