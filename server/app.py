@@ -1,18 +1,10 @@
 #!/usr/bin/env python3
-
 from flask import Flask, make_response, jsonify, request, session, send_file
-# from flask_migrate import Migrate
 from model import db, Sketch
 from werkzeug.utils import secure_filename
-# from io import BytesIO
 import io
 import boto3
-import datetime
 import uuid
-# from apifetch import new_file_name
-# from dotenv import load_dotenv
-# import os
-
 from services import app, os, db, requests
 from model import User, Image, Sketch, Instance
 import base64
@@ -28,16 +20,13 @@ if api_key is None:
 def generate_ai():
     #request.data is used to access raw http data from a post request
     img=session.get('image_filename')
-    print(img)
-    # if(img):
+    # if(img): this was necessary if there was never an image in my sessions.  however, i might need to 
+    #rework this logic
     session.pop('image_filename')
-    print(session)
     init_image = request.files['name'].read()
     imf=io.BytesIO(init_image)
-    # print(imf)
-    # print(init_image.read())
+    print(imf)
 #this is posting to the api through my requests library
-    # init_image_file=BytesIO(init_image)
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/image-to-image",
         headers={
@@ -46,7 +35,6 @@ def generate_ai():
             "Authorization": f"Bearer {api_key}"
         },
         files={
-            # "init_image": open(init_image, 'r')
             "init_image":imf
         },
         data={
@@ -68,7 +56,7 @@ def generate_ai():
     for i, image in enumerate(data["artifacts"]):
         with open(f"./ai_images_download/trial_1.png", "wb") as f:
             f.write(base64.b64decode(image["base64"]))
-
+#caloing the f/n to upload newly generated ai image to aws
     upload_asw()
     return send_file('./ai_images_download/trial_1.png', mimetype='image/png')
 
@@ -95,12 +83,7 @@ def imagesession():
 @app.route('/saveimage', methods=['POST'])
 def saveimage():
     print('image saved')
-    # filename=request.json['filename']
-    # file_exist = Image.query.filter(Image.filename==filename).first()
-    # if file_exist is not None:
-    #     return jsonify({'error':'image already exists'}), 409
     data=request.get_json()
-    # print(data)
     try:
         image = Image(
             filename=data['filename'],
@@ -108,7 +91,6 @@ def saveimage():
             original_filename=data['original_filename'],
             bucket=data['bucket'],
             region=data['region'],
-            # filename=filename
             )
         print(image)
         db.session.add(image)
@@ -118,19 +100,10 @@ def saveimage():
     except Exception as e:
         return make_response({"errors": str(e)}, 422)
 
-
-
-# @app.route('/fetchsketchid')
-# def fetchsketchid():
-#     filename=request.json['filename']
-#     right_sketch = Sketch.query.filter(Sketch.filename==filename).first()
-#     sketch_id=right_sketch.id
-#     return make_response(jsonify(sketch_id), 200)
-
 @app.route('/saveinstance', methods=['POST'])
 def saveinstance():
     data=request.get_json()
-    print(data)
+    # print(data)
     try:
         inst=Instance(
             users_id=data['user_id'],
@@ -165,8 +138,7 @@ def get_image(image_id):
     image = Image.query.get(image_id)
     if image:
         filename = image.filename
-        print(filename)
-        # Do something with the filename, such as displaying the sketch image on a web page
+        # print(filename)
         return make_response({"filename": filename})
     else:
         return make_response({"message": "Sketch not found"}, 404)
@@ -177,115 +149,9 @@ def get_sketch(sketch_id):
     if sketch:
         filename = sketch.filename
         print(filename)
-        # Do something with the filename, such as displaying the sketch image on a web page
         return make_response({"filename": filename})
     else:
         return make_response({"message": "Sketch not found"}, 404)
-
-
-
-
-
-###################################################################################
-# from s3 import generate_upload_url, createConfig
-# import hashlib
-# import random
-# import string
-# import boto3
-# # import os
-# from dotenv import load_dotenv
-# load_dotenv()
-
-# from datetime import datetime, timedelta
-
-# s3 = boto3.client(
-#     's3',
-#     aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
-#     aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
-# )
-# S3_BUCKET_NAME = 'phase-4-bucket-2'
-# S3_REGION = 'us-west-2'
-
-# def url():
-#     # Generate a unique image name
-#     image_name = generate_random_string(16)
-
-#     # Set S3 bucket and object key
-#     bucket_name = 'phase-4-bucket-2'
-#     object_key = image_name
-
-#     # Set the pre-signed URL expiration time
-#     expiration = datetime.now() + timedelta(minutes=1)
-
-#     # Generate a pre-signed URL for uploading to S3
-#     presigned_url = s3.generate_presigned_url(
-#         ClientMethod='put_object',
-#         Params={
-#             'Bucket': bucket_name,
-#             'Key': object_key,
-#             'Expires': expiration
-#         },
-#         HttpMethod='PUT'
-#     )
-
-#     return presigned_url
-
-# def generate_random_string(length):
-#     # Generate a random string of alphanumeric characters
-#     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
-
-# @app.route('/generate-upload-url', methods=['PUT'])
-# def generate_upload_url():
-#     try:
-#         data = request.get_json()
-#         file_name = data['filename']
-#         file_type = data['type']
-
-#         if not file_name or not file_type:
-#             return jsonify({'error': 'File name and type are required'}), 400
-
-#         # file_name_hash = hashlib.md5(file_name.encode()).hexdigest()
-
-#         # Generate a presigned URL for the S3 upload
-#         presigned_post = s3.generate_presigned_post(
-#             Bucket=S3_BUCKET_NAME,
-#             Key=file_name,
-#             Fields={"Content-Type": file_type},
-#             Conditions=[
-#                 {"Content-Type": file_type},
-#                 {"bucket": S3_BUCKET_NAME},
-#                 {"acl": "public-read"},
-#                 ["content-length-range", 0, 10 * 1024 * 1024],
-#             ],
-#             ExpiresIn=3600
-#         )
-
-#         # Return the S3 upload URL and form fields
-#         return jsonify({
-#             'url': presigned_post['url'],
-#             'fields': presigned_post['fields']
-#         }), 200
-
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-
-# @app.route('/s3Url')
-# def get_s3_url():
-#     response = url()
-#     return jsonify({'url': response}),200
-    
-###################################################################################
-
-#this prints the current buckets in AWS
-# s3=boto3.resource('s3')
-# for bucket in s3.buckets.all():
-#     print(bucket.name)
-
-
-@app.route('/')
-def hello_world():
-    return 'hello world'
-
 
 #######################################################################################################
 ###########                         Begin of loggin authorization                           ###########
@@ -351,12 +217,6 @@ def User_Logout():
     session.pop('user_id')
     return '200'
 
-
-@app.route('/fetch')
-def get_image_db():
-    #gets a specific image from the db based upon the logged in user and what not, then proceeds to call the download_aws() function to pull the image down from s3
-    pass
-
 @app.route('/posting_sketches', methods=['POST'])
 def posting_sketches():
     #the unique key will be the name of the sketch 
@@ -378,28 +238,12 @@ def posting_sketches():
     except:
         return jsonify({'success': False})
     
-
-
 #######################################################################################################
 ###########                         fetching access keys for aws                            ###########
 #######################################################################################################
-
 
 @app.route('/aws-keys')
 def get_aws_keys():
     access_key = os.environ.get('AWS_ACCESS_KEY_ID')
     secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
     return jsonify({'access_key': access_key, 'secret_access_key': secret_key})
-
-
-#wtf is this for???????? this was my original testing method that put the text to image data into postgres
-
-# @app.route('/upload', methods=['POST'])
-# def upload_db():
-#     original_fn = "./ai_images_upload/testing0.png"
-#     #new_file_name is from apifetch that takes the first ten letters of the prompt
-#     fname = secure_filename(f'{new_file_name}.png')
-#     img=Img(original_filename=original_fn, filename=fname, bucket='phase-5-images', region='us-west-2')
-#     db.session.add(img)
-#     db.session.commit()
-#     return 'image has been uploaded', 200

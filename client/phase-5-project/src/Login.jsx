@@ -1,6 +1,4 @@
-// import React from 'react'
-import { useEffect, useState } from 'react'
-// import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
@@ -17,9 +15,8 @@ function Login({user, setUser}){
             body:JSON.stringify(data)
         })
         .then(r=>r.json())
-        .then(data=>console.log(data))
+        .then(()=>nav('/home'))
     };
-
     useEffect(()=>{
         fetch('api/info')
         .then(r=>r.json())
@@ -27,21 +24,28 @@ function Login({user, setUser}){
             setUser(data['id'])
         })
     }, [])
-
     if(user){
         return nav('/home')
     }
+
+    // function signup(){
+
+    // }
+
     return(
-            /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
+        <>
+        <h1>Sketch to Image</h1>
+        <p>A simple react and python script that allows a user to sketch in react, submit the drawing, and generate an AI image. </p>
         <form onSubmit={handleSubmit(onSubmit)}>
-      {/* register your input into the hook by invoking the "register" function */}
             <input defaultValue="test" {...register("email")} />
-      {/* include validation with required or other standard HTML validation rules */}
             <input {...register("password_hash", { required: true })} />
-      {/* errors will return when field validation fails  */}
             {errors.password && <span>This field is required</span>}
             <input type="submit" />
         </form>
+        <h1>Want to try?  Sign up!</h1>
+        <p>this will pull down a popout menu for which people can sign up from there</p>
+        {/* <button onClick={signup}>Sign Up</button> */}
+        </>
     )
 }
 export default Login
