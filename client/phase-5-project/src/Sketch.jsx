@@ -23,6 +23,9 @@ export default function Sketch({user}){
     const[prompt, setprompt]=useState('')
     const [preset, setpreset]=useState('')
     const [clip, setclip]=useState('')
+    const [strength, setstrength]=useState(0)
+    const [steps, setsteps]=useState(0)
+    const [cfg, setcfg]=useState(0)
 
     const canvasRef=useRef(null)
     const contextRef=useRef(null)
@@ -117,6 +120,9 @@ export default function Sketch({user}){
             formData.append('text_prompts[0][text]', prompt);
             formData.append('style_preset', preset);
             formData.append('clip_guidance_preset', clip)
+            formData.append('image_strength', strength)
+            formData.append('steps', steps)
+            formData.append('cfg_scale', cfg)
             handleUpload(myblob);
             //above, send blob to the f/n to upload to aws.  then 
             //sends the blob to py to contact api to gen upload
@@ -165,10 +171,7 @@ export default function Sketch({user}){
           .then(data=>{setsketchid(data.sketch_id)})
     }
     //maybe add this in to change text prompt
-    function textChange(e){
-        setprompt(e.target.value)
-    }
-
+    
     function showImage(e){
         e.preventDefault()
         setimg(true)
@@ -193,7 +196,7 @@ export default function Sketch({user}){
         .then(r=>r.json())
         .then(data=>{saveInstance(data.image_id); setupdatedimg(true); if(updatedimg){nav("/view")}})
     }
-//saves the sketch id and image id to the table images
+    //saves the sketch id and image id to the table images
     function saveInstance(imgid){
         fetch('api/saveinstance', {
             method: 'POST',
@@ -210,12 +213,26 @@ export default function Sketch({user}){
         .then(r=>r.json())
         .then(data=>console.log(data))
     }
+
+//listeners for the form data
+    const textChange=(event) => {
+        setprompt(event.target.value);
+    };
     const handlePresetChange = (event) => {
         setpreset(event.target.value);
-      };
-      const handleClipChange = (event) => {
+    };
+    const handleClipChange = (event) => {
         setclip(event.target.value);
-      };
+    };
+    const handleStrengthChange = (event) => {
+        setstrength(event.target.value);
+    };
+    const handleStepChange = (event) => {
+        setsteps(event.target.value);
+    };
+    const handlecfgChange = (event) => {
+        setcfg(event.target.value);
+    };
 
     return(
         <>
@@ -232,10 +249,10 @@ export default function Sketch({user}){
             <div>
                 <div></div>
                 <input type="text" placeholder="prompt" onChange={textChange}></input>
-                <div><input type='text' placeholder="style-preset"/></div>
                 <div>
                     <label htmlFor="my-dropdown">Style Preset:</label>
                     <select id="my-dropdown" value={preset} onChange={handlePresetChange}>
+                        <option>select...</option>
                         <option value="enhance">enhance</option>
                         <option value="anime">anime</option>
                         <option value="photographic">photographic</option>
@@ -254,7 +271,6 @@ export default function Sketch({user}){
                         <option value="pixel-art">pixel-art</option>
                         <option value="tile-texture">tile-texture</option>
                     </select>
-                    <p>You selected: {preset}</p>
                 </div>
                 <div>
                     <label htmlFor="clip-dropdown">Clip Preset:</label>
@@ -267,13 +283,14 @@ export default function Sketch({user}){
                         <option value="SLOWER">SLOWER</option>
                         <option value="SLOWEST">SLOWEST</option>
                     </select>
-                    <p>You selected: {clip}</p>
                 </div>
-                {/* <input type ='text'>steps</input> */}
-
+                <label htmlFor='strength'>Image Strength</label>
+                <input id='strength' type="number" step="0.001" min="0" max="1" value={strength} onChange={handleStrengthChange} />
+                <label htmlFor='step'>Steps</label>
+                <input id='step' type="number" step="1" min="0" max="150" value={steps} onChange={handleStepChange} />
+                <label htmlFor='cfg'>CFG Scale</label>
+                <input id='cfg' type="number" step="1" min="0" max="35" value={cfg} onChange={handlecfgChange} />
                 <button onClick={saveSketch}>Save Sketch</button>
-                {/* <input type="file" onChange={handleFileInput} /> */}
-                {/* <button onClick={() => handleUpload(selectedFile)}> Upload to S3</button> */}
                 <button onClick={showImage}>Show Me the Image!</button>
             </div>
             {img ? 
@@ -283,6 +300,21 @@ export default function Sketch({user}){
                 <button onClick={saveImage}>save image</button>
             </div>):(<p>show image</p>)
             }
+            <p>1. `image_strength`: This parameter controls the strength of the input image in the final output. Setting this to a higher value will result in a stronger influence of the input image in the final output. 
+
+2. `init_image_mode`: This parameter controls how the input image should be used to generate the output. Setting this to "IMAGE_STRENGTH" will result in a blending of the input image with the generated output. Setting it to "NOISE" will ignore the input image and generate an image purely from noise. 
+
+3. `text_prompts`: This parameter is used to provide text prompts to the AI model. The AI will use these prompts to generate an image that is related to the provided text. 
+
+4. `cfg_scale`: This parameter controls the scale of the model configuration. A higher value will result in a more complex and detailed output, but may also require more computational resources. 
+
+5. `clip_guidance_preset`: This parameter is used to provide additional guidance to the model using the CLIP model. The CLIP model is a machine learning model that can understand the context of an image and provide additional guidance to the image generation process. 
+
+6. `style_preset`: This parameter is used to provide a pre-defined style to the generated image. Setting this to a specific style will result in an image that has characteristics of that style. 
+
+7. `samples`: This parameter controls the number of samples the model generates to arrive at the final image. Increasing this number can result in a more accurate and detailed output, but may also require more computational resources. 
+
+8. `steps`: This parameter controls the number of steps the model takes to generate the final image. Increasing this number can result in a more accurate and detailed output, but may also require more computational resources.</p>
         </>
     )
 }

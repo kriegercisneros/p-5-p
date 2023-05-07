@@ -27,11 +27,16 @@ def generate_ai():
     text_prompt=request.form.get('text_prompts[0][text]')
     style_preset=request.form.get('style_preset')
     clip_guidance_preset=request.form.get('clip_guidance_preset')
+    image_strength=request.form.get('image_strength')
+    steps=request.form.get('steps')
+    cfg_scale=request.form.get('cfg_scale')
     imf=io.BytesIO(init_image)
     print(imf)
     print(text_prompt)
     print(style_preset)
     print(clip_guidance_preset)
+    print(image_strength)
+    print(cfg_scale)
 #this is posting to the api through my requests library
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/image-to-image",
@@ -44,14 +49,14 @@ def generate_ai():
             "init_image":imf
         },
         data={
-            "image_strength": 0.01,
+            "image_strength": image_strength,
             "init_image_mode": "IMAGE_STRENGTH",
             "text_prompts[0][text]":text_prompt,
-            "cfg_scale": 30,
+            "cfg_scale": cfg_scale,
             "clip_guidance_preset": clip_guidance_preset,
             "style_preset":style_preset,
             "samples": 1,
-            "steps": 150,
+            "steps": steps
         }
     )
     if response.status_code != 200:
