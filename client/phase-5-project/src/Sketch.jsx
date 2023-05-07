@@ -22,6 +22,7 @@ export default function Sketch({user}){
     const[isDrawing, setIsDrawing]=useState(false)
     const[prompt, setprompt]=useState('')
     const [preset, setpreset]=useState('')
+    const [clip, setclip]=useState('')
 
     const canvasRef=useRef(null)
     const contextRef=useRef(null)
@@ -115,6 +116,7 @@ export default function Sketch({user}){
             formData.append('name', myblob, 'sketch.png');
             formData.append('text_prompts[0][text]', prompt);
             formData.append('style_preset', preset);
+            formData.append('clip_guidance_preset', clip)
             handleUpload(myblob);
             //above, send blob to the f/n to upload to aws.  then 
             //sends the blob to py to contact api to gen upload
@@ -211,6 +213,9 @@ export default function Sketch({user}){
     const handlePresetChange = (event) => {
         setpreset(event.target.value);
       };
+      const handleClipChange = (event) => {
+        setclip(event.target.value);
+      };
 
     return(
         <>
@@ -250,6 +255,19 @@ export default function Sketch({user}){
                         <option value="tile-texture">tile-texture</option>
                     </select>
                     <p>You selected: {preset}</p>
+                </div>
+                <div>
+                    <label htmlFor="clip-dropdown">Clip Preset:</label>
+                    <select id="clip-dropdown" value={clip} onChange={handleClipChange}>
+                        <option value="none">none</option>
+                        <option value="FAST_BLUE">FAST_BLUE</option>
+                        <option value="FAST_GREEN">FAST_GREEN</option>
+                        <option value="SIMPLE">SIMPLE</option>
+                        <option value="SLOW">SLOW</option>
+                        <option value="SLOWER">SLOWER</option>
+                        <option value="SLOWEST">SLOWEST</option>
+                    </select>
+                    <p>You selected: {clip}</p>
                 </div>
                 {/* <input type ='text'>steps</input> */}
 

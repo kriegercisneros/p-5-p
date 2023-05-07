@@ -26,10 +26,12 @@ def generate_ai():
     init_image = request.files['name'].read()
     text_prompt=request.form.get('text_prompts[0][text]')
     style_preset=request.form.get('style_preset')
+    clip_guidance_preset=request.form.get('clip_guidance_preset')
     imf=io.BytesIO(init_image)
     print(imf)
     print(text_prompt)
     print(style_preset)
+    print(clip_guidance_preset)
 #this is posting to the api through my requests library
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/image-to-image",
@@ -46,7 +48,7 @@ def generate_ai():
             "init_image_mode": "IMAGE_STRENGTH",
             "text_prompts[0][text]":text_prompt,
             "cfg_scale": 30,
-            "clip_guidance_preset": "FAST_BLUE",
+            "clip_guidance_preset": clip_guidance_preset,
             "style_preset":style_preset,
             "samples": 1,
             "steps": 150,
