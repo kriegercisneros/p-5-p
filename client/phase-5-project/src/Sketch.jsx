@@ -20,7 +20,9 @@ export default function Sketch({user}){
     const [ak, setak]=useState(null)
     const[sak, setsak]=useState(null)
     const[isDrawing, setIsDrawing]=useState(false)
-    
+    const[prompt, setprompt]=useState('')
+    const [preset, setpreset]=useState('')
+
     const canvasRef=useRef(null)
     const contextRef=useRef(null)
 
@@ -111,6 +113,8 @@ export default function Sketch({user}){
         canvas.toBlob((myblob)=>{
             const formData = new FormData();
             formData.append('name', myblob, 'sketch.png');
+            formData.append('text_prompts[0][text]', prompt);
+            formData.append('style_preset', preset);
             handleUpload(myblob);
             //above, send blob to the f/n to upload to aws.  then 
             //sends the blob to py to contact api to gen upload
@@ -160,7 +164,7 @@ export default function Sketch({user}){
     }
     //maybe add this in to change text prompt
     function textChange(e){
-        console.log(e.target.value)
+        setprompt(e.target.value)
     }
 
     function showImage(e){
@@ -204,6 +208,9 @@ export default function Sketch({user}){
         .then(r=>r.json())
         .then(data=>console.log(data))
     }
+    const handlePresetChange = (event) => {
+        setpreset(event.target.value);
+      };
 
     return(
         <>
@@ -218,8 +225,34 @@ export default function Sketch({user}){
             />
             {/* <button onClick={saveSketch}>Save Sketch</button> */}
             <div>
-                <div>React S3 File Upload</div>
+                <div></div>
                 <input type="text" placeholder="prompt" onChange={textChange}></input>
+                <div><input type='text' placeholder="style-preset"/></div>
+                <div>
+                    <label htmlFor="my-dropdown">Style Preset:</label>
+                    <select id="my-dropdown" value={preset} onChange={handlePresetChange}>
+                        <option value="enhance">enhance</option>
+                        <option value="anime">anime</option>
+                        <option value="photographic">photographic</option>
+                        <option value="digital-art">digital-art</option>
+                        <option value="comic-book">comic-book</option>
+                        <option value="fantasy-art">fantasy-art</option>
+                        <option value="line-art">line-art</option>
+                        <option value="analog-film">analog-film</option>
+                        <option value="neon-punk">neon-punk</option>
+                        <option value="isometric">isometric</option>
+                        <option value="low-poly">low-poly</option>
+                        <option value="origami">origami</option>
+                        <option value="modeling-compound">modeling-compound</option>
+                        <option value="cinematic">cinematic</option>
+                        <option value="3d-model">3d-model</option>
+                        <option value="pixel-art">pixel-art</option>
+                        <option value="tile-texture">tile-texture</option>
+                    </select>
+                    <p>You selected: {preset}</p>
+                </div>
+                {/* <input type ='text'>steps</input> */}
+
                 <button onClick={saveSketch}>Save Sketch</button>
                 {/* <input type="file" onChange={handleFileInput} /> */}
                 {/* <button onClick={() => handleUpload(selectedFile)}> Upload to S3</button> */}

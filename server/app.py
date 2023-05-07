@@ -24,8 +24,12 @@ def generate_ai():
     #rework this logic
     session.pop('image_filename')
     init_image = request.files['name'].read()
+    text_prompt=request.form.get('text_prompts[0][text]')
+    style_preset=request.form.get('style_preset')
     imf=io.BytesIO(init_image)
     print(imf)
+    print(text_prompt)
+    print(style_preset)
 #this is posting to the api through my requests library
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/image-to-image",
@@ -38,14 +42,14 @@ def generate_ai():
             "init_image":imf
         },
         data={
-            "image_strength": 0.001,
+            "image_strength": 0.01,
             "init_image_mode": "IMAGE_STRENGTH",
-            "text_prompts[0][text]":"galatic space monkeys",
-            "cfg_scale": 20,
+            "text_prompts[0][text]":text_prompt,
+            "cfg_scale": 30,
             "clip_guidance_preset": "FAST_BLUE",
-            "style_preset":"origami",
+            "style_preset":style_preset,
             "samples": 1,
-            "steps": 15,
+            "steps": 150,
         }
     )
     if response.status_code != 200:
