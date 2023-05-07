@@ -3,17 +3,25 @@ import { useNavigate } from 'react-router-dom'
 
 
 export default function View(){
-    const user = 13
     const [instances, setInstances] = useState([]);
-    const [imgname, setimgname]=useState([])
+    const [userid, setUserid]=useState(undefined)
+    useEffect(()=>{
+        fetch('api/info')
+        .then(r=>r.json())
+        .then(data=>{
+            setUserid(data['id'])
+        })
+    }, [])
+    // const [imgname, setimgname]=useState([])
     // const [imageData, setImageData]=useState('')
     // const [sketchData, setSketchData] = useState('')
-
+    // const userid=14
+    console.log(userid)
     useEffect(() => {
-        fetch(`api/instances/${user}`)
+        fetch(`api/instances/${userid}`)
             .then((response)=>response.json())
             .then((data)=>setInstances(data.instances))
-    }, []);
+    }, [userid]);
 
 //   useEffect(() => {
 //     if (instances.length > 0) {
@@ -44,9 +52,9 @@ export default function View(){
 //       )}
 //     </div>
 //   );
-const imap = instances.map(instance=>{
-    console.log(instance.sketches.filename)
-})
+// const imap = instances.map(instance=>{
+//     console.log(instance.sketches.filename)
+// })
 // console.log(instances)
     return (
       <div>

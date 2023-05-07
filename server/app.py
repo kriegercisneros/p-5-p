@@ -28,8 +28,10 @@ if api_key is None:
 def generate_ai():
     #request.data is used to access raw http data from a post request
     img=session.get('image_filename')
-    if(img):
-        session.pop('image_filename')
+    print(img)
+    # if(img):
+    session.pop('image_filename')
+    print(session)
     init_image = request.files['name'].read()
     imf=io.BytesIO(init_image)
     # print(imf)
@@ -84,7 +86,6 @@ def upload_asw():
 @app.route('/imagesession')
 def imagesession():
     image_sesh=session.get('image_filename')
-    print(session)
     if not image_sesh:
         return jsonify({"error":"unauthorized"}), 401
     return jsonify({
@@ -294,7 +295,6 @@ def hello_world():
 @app.route('/info')
 def get_curr_user():
     user_id=session.get('user_id')
-    print(session)
     if not user_id:
         return jsonify({"error":"unauthorized"}), 401
     user=User.query.filter(User.id==user_id).first()
@@ -313,8 +313,6 @@ def login():
             #this is saying "user_id" in sessions is equal to the user
             #id we have found in the user table
             session["user_id"] = user.id
-            
-            print(session)
             return make_response(jsonify(user.to_dict(), {"message":"You are successfully logged in."}), 200)
         else:
             return make_response(jsonify({"login":"Unauthorized"}), 401)
@@ -344,16 +342,13 @@ def users():
             # print(user.id)
             #setting sessions id here to equal the new user_id that we JUST CREATED!
             session['user_id'] = user.id
-            print(session)
             return make_response(jsonify(user.to_dict(), {"message":"registered successfully"}), 201)
         except Exception as e:
             return make_response({"errors": [e.__str__()]}, 422)
 
 @app.route('/logout', methods=['POST'])
 def User_Logout():
-    print(session)
     session.pop('user_id')
-    print(session)
     return '200'
 
 
