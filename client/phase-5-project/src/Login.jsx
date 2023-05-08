@@ -1,54 +1,145 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
+import { Fragment } from 'react'
+import { Popover, Transition } from '@headlessui/react'
+import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import {
+  ArrowPathIcon,
+  ChartPieIcon,
+  CursorArrowRaysIcon,
+  FingerPrintIcon,
+  SquaresPlusIcon,
+} from '@heroicons/react/24/outline'
+
+// function isValidEmail(email) {
+//   return /\S+@\S+\.\S+/.test(email);
+// }
+
 function Login({user, setUser}){
-    const nav=useNavigate()
+  const nav=useNavigate()
+  
 
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const onSubmit = data => {
-        fetch('api/login',{
-            method:'POST',
-            headers: {
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify(data)
-        })
-        .then(r=>r.json())
-        .then(()=>nav('/home'))
-    };
-    useEffect(()=>{
-        fetch('api/info')
-        .then(r=>r.json())
-        .then(data=>{
-            setUser(data['id'])
-        })
-    }, [])
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [isValidForm, setIsValidForm] = useState(false);
 
-    if(user){
-        return nav('/home')
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const onSubmit = data => {
+      fetch('api/login',{
+          method:'POST',
+          headers: {
+              'Content-Type':'application/json'
+          },
+          body:JSON.stringify(data)
+      })
+      .then(r=>r.json())
+      .then(()=>nav('/home'))
+  };
+
+  useEffect(()=>{
+      fetch('api/info')
+      .then(r=>r.json())
+      .then(data=>{
+          setUser(data['id'])
+      })
+  }, [])
+
+  if(user){
+      return nav('/home')
+  }
+
+  function handleEmailChange(event) {
+    setEmail(event.target.value);
+  }
+
+  function handlePasswordChange(event) {
+    setPassword(event.target.value);
+  }
+
+  // function handlePasswordConfirmChange(event) {
+  //   setPasswordConfirm(event.target.value);
+  // }
+
+  function handleUsernameChange(event) {
+    setUsername(event.target.value);
+  }
+
+  function handleSecSubmit(event) {
+    event.preventDefault();
+    const data = {
+      email: email,
+      password_hash: password,
+      username: username
     }
 
-    function onSecondSubmit(){
-      console.log('second submit')
-    }
-    // function signup(){
+    fetch('api/users',{
+      method:'POST',
+      headers: {
+          'Content-Type':'application/json'
+      },
+      body:JSON.stringify(data)
+  })
+  .then(r=>r.json())
+  .then(data=>console.log(data))
+  }
 
-    // }
-
+  // function validateForm() {
+  //   setIsValidForm(
+  //     isValidEmail(email) && password === passwordConfirm && username.trim().length > 0
+  //   );
+  // }
     return(
-    <div>
-      <div className= "flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <h1 className="mt-10 text-center text-4xl font-bold leading-9 tracking-tight text-gray-900">Welcome to Sketch to Img</h1>
+      <div style={{
+        // background: 'rgba(139, 131, 120, 0.5)',
+        backgroundImage: `url("https://restoredecorandmore.com/wp-content/uploads/2022/05/aesthetic-boho-iPhone-wallpaper-43.jpg")`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        height:'130vh',
+        width:'60vw',
+        position: 'relative',
+        borderRadius: '20px', 
+        padding:'20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 'auto',
+      }}>
+      <div style={{
+        position: "absolute",
+        top: "35%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        background: 'rgba(139, 131, 120, 0.5)',
+        borderRadius: '20px', 
+
+      }}>
+        <div className="flex flex-col items-center justify-center">
+      <div className= "flex min-h-full flex-1 flex-col justify-center px-15 py-20 lg:px-8">
+        {/* <div style={{
+        // position: "absolute",
+        top: "35%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        background: "rgba(54, 57, 63, 0.5)",
+        borderRadius: '20px', 
+        paddingBottom:'20px',
+      }}> */}
+        <h1 className="mt-10 text-center text-4xl leading-9 tracking-tight" style={{color:'#e6bfb3'}}>Simple Sketch</h1>
+        {/* </div> */}
+        <h3 className="mt-5 text-center text-1xl leading-9 tracking-tight text-gray-900">Turn your idea into AI an masterpiece.</h3>
       </div>
       <div className ="flex min-h-full flex-1 flex-col justify-center px-6 py-1 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            className="mx-auto h-10 w-auto"
-            src="https://phase-5-images.s3.us-west-2.amazonaws.com/c5c8050f6ae14403b61f5645c846c075.png"
+          {/* <img
+            className="mx-auto h-30 w-auto"
+            src="https://www.google.com/aclk?sa=l&ai=DChcSEwju2dyhi-b-AhXtB60GHT1nAfkYABAJGgJwdg&sig=AOD64_14QdsPxNJyM0aFJb0-LaZF7w2DKA&adurl&ctype=5&ved=2ahUKEwjri8yhi-b-AhULKN4AHVB9BZcQvhd6BQgBEIkB"
             alt="Your Company"
-          />
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+            style={{borderRadius: '140px', height:'30vh'}}
+          /> */}
+          <h2 className="mt-2 text-center font-bold leading-9 tracking-tight text-gray-900">
             Sign in to your account
           </h2>
         </div>
@@ -56,41 +147,47 @@ function Login({user, setUser}){
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" action="#" onSubmit={handleSubmit(onSubmit)}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-pink-900">
+              {/* <label htmlFor="email" className="block text-sm font-medium leading-6 text-yellow-900">
                 Email address
-              </label>
+              </label> */}
               <div className="mt-2">
                 <input
                   id="email"
                   name="email"
                   type="email"
+                  placeholder="email"
                   autoComplete="email"
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pink-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
                   {...register("email")}
+                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.75)' }}
                 />
               </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-pink-900">
+              {/* <div>
+                <label htmlFor="password" className="block text-sm font-medium leading-6 text-yellow-900">
                   Password
-                </label>
-                <div className="text-sm">
-                  <a href="#" className="font-semibold text-pink-600 hover:text-pink-500">
+                </label> */}
+                {/* <div className="text-sm">
+                  <a href="#" className="font-semibold text-yellow-600 hover:text-yellow-500">
                     Forgot password?
                   </a>
-                </div>
-              </div>
+                </div> */}
+              {/* </div> */}
               <div className="mt-2">
                 <input
                   id="password"
                   name="password"
                   type="password"
+                  placeholder="password"
                   autoComplete="current-password"
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pink-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
+                  {...register("password_hash", { required: true })}
+                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.75)' }}
+                  // {errors.password && <span>This field is required</span>}
                 />
               </div>
             </div>
@@ -98,78 +195,54 @@ function Login({user, setUser}){
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-pink-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
+                className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
               >
                 Sign in
               </button>
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
-            Want to Try?{' '}
-            {/* <a href="#" className="font-semibold leading-6 text-pink-600 hover:text-pink-500" onClick={()=>nav('/signup')}>
-              Sign Up!
-            </a> */}
-          </p>
-          <div className="relative">
-            <button type="button" className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-pink-600 hover:text-pink-500" aria-expanded="false">
+          <p className="mt-10 text-center text-sm text-gray-500">Want to Try?</p>
+          <Popover className="relative">
+            <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
               <span>Sign Up!</span>
-              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4">
-            <div className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
-              <div className="p-4">
-                <div className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50">
-                  <div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                    <svg className="h-6 w-6 text-gray-600 group-hover:text-pink-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
-                    </svg>
+              {/* <ChevronDownIcon className="h-5 w-5" aria-hidden="true" /> */}
+            </Popover.Button>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-500"
+              enterFrom="opacity-50 translate-y-1"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-500"
+              leaveFrom="opacity-50 translate-y-0"
+              leaveTo="opacity-0 translate-y-1"
+            >
+              <Popover.Panel className="absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4" >
+                <form onSubmit={handleSecSubmit} className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5" style={{ backgroundColor: 'rgba(159, 151, 140, 0.25)' }}>
+                  <div className="p-4">
+                    <div className="mb-4">
+                      {/* <label htmlFor="email" className="block font-semibold text-gray-900 ">Email</label> */}
+                      <input placeholder="email" type="email" id="email" name="email" required className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6" value={email} onChange={handleEmailChange}/>
+                    </div>
+                    <div className="mb-4">
+                      {/* <label htmlFor="password" className="block font-semibold text-gray-900">Password</label> */}
+                      <input placeholder="password" type="password" id="password" name="password" minLength="8" required className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6" value={password} onChange={handlePasswordChange}/>
+                    </div>
+                    <div className="mb-4">
+                      {/* <label htmlFor="username" className="block font-semibold text-gray-900">Username</label> */}
+                      <input placeholder="username" type="text" id="username" name="username" required className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6" value={username} onChange={handleUsernameChange}/>
+                    </div>
+                    <button type="submit" className="bg-yellow-600 text-white rounded-lg py-2 px-4 hover:bg-yellow-700 transition-colors duration-300">Sign Up</button>
                   </div>
-                  
-                  <div>
-                    {/* <a href="#" className="font-semibold text-pink-900">
-                      Analytics
-                      <span className="absolute inset-0"></span>
-                    </a>
-                    <p className="mt-1 text-gray-600">Get a better understanding of your traffic</p> */}
-                    
-                    <a href="#" className="font-semibold text-pink-900">
-                      <form className="absolute inset-0" action="#" onSubmit={handleSubmit(onSecondSubmit)}>
-                        <div>
-                          <label htmlFor="email" className="block text-sm font-medium leading-6 text-pink-900">
-                            Email address
-                          </label>
-                          <div className="mt-2">
-                            <input
-                              id="email"
-                              name="email"
-                              type="email"
-                              autoComplete="email"
-                              required
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pink-600 sm:text-sm sm:leading-6"
-                              {...register("email")}
-                            />
-                          </div>
-                        </div>
-                      </form>
-                    </a>
-
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+                </form>
+              </Popover.Panel>
+            </Transition>
+          </Popover>
+        </div>
         </div>
       </div>
+      </div>
     </div>
-  
   )
 }
 export default Login

@@ -12,7 +12,7 @@ function App(){
   const [user, setUser]=useState(undefined)
 
   return(
-    <div className='App'>
+    <div className='App' >
       <Routes>
         <Route exact path='/login' element={<Login user={user} setUser={setUser}/>}/>
         <Route exact path='/info' element={<Info user={user} setUser={setUser}/>}/>
