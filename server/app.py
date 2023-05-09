@@ -19,10 +19,12 @@ if api_key is None:
 @app.route('/generate-ai', methods=['POST'])
 def generate_ai():
     #request.data is used to access raw http data from a post request
-    img=session.get('image_filename')
-    # if(img): this was necessary if there was never an image in my sessions.  however, i might need to 
+    # img=session.get('image_filename')
+    # if(img): 
+        # this was necessary if there was never an image in my sessions.  however, i might need to 
     #rework this logic
-    session.pop('image_filename')
+    # session.pop('image_filename')
+    print(session)
     init_image = request.files['name'].read()
     text_prompt=request.form.get('text_prompts[0][text]')
     style_preset=request.form.get('style_preset')
@@ -31,12 +33,12 @@ def generate_ai():
     steps=request.form.get('steps')
     cfg_scale=request.form.get('cfg_scale')
     imf=io.BytesIO(init_image)
-    print(imf)
-    print(text_prompt)
-    print(style_preset)
-    print(clip_guidance_preset)
-    print(image_strength)
-    print(cfg_scale)
+    # print(imf)
+    # print(text_prompt)
+    # print(style_preset)
+    # print(clip_guidance_preset)
+    # print(image_strength)
+    # print(cfg_scale)
 #this is posting to the api through my requests library
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/image-to-image",
@@ -49,9 +51,13 @@ def generate_ai():
             "init_image":imf
         },
         data={
-            "image_strength": image_strength,
-            "init_image_mode": "IMAGE_STRENGTH",
+            # "image_strength": image_strength,
+
+            "init_image_mode": "STEP_SCHEDULE",
             "text_prompts[0][text]":text_prompt,
+            "text_prompts[0][weight]": 0.5,
+            "text_prompts[1][text]": "land, ground, dirt, grass",
+            "text_prompts[1][weight]": -0.9,
             "cfg_scale": cfg_scale,
             "clip_guidance_preset": clip_guidance_preset,
             "style_preset":style_preset,
@@ -68,25 +74,43 @@ def generate_ai():
         with open(f"./ai_images_download/trial_1.png", "wb") as f:
             f.write(base64.b64decode(image["base64"]))
 #caloing the f/n to upload newly generated ai image to aws
-    upload_asw()
-    return send_file('./ai_images_download/trial_1.png', mimetype='image/png')
-
-def upload_asw(): 
+    # upload_asw()
     s3=boto3.client('s3')
     uniqueimagename=f"{uuid.uuid4().hex}.png"
     print(uniqueimagename)  
     session['image_filename']=uniqueimagename
+    print(session)
     s3.upload_file(
         Filename="./ai_images_download/trial_1.png",
         Bucket="phase-5-images",
         Key=uniqueimagename,
     )
+    return send_file('./ai_images_download/trial_1.png', mimetype='image/png'); {'message':uniqueimagename}
+
+# def upload_asw(): 
+#     s3=boto3.client('s3')
+#     uniqueimagename=f"{uuid.uuid4().hex}.png"
+#     print(uniqueimagename)  
+#     session['image_filename']=uniqueimagename
+#     print(session)
+#     s3.upload_file(
+#         Filename="./ai_images_download/trial_1.png",
+#         Bucket="phase-5-images",
+#         Key=uniqueimagename,
+#     )
 
 @app.route('/imagesession')
 def imagesession():
+    # image_sesh=session.get('image_filename')
+    # if not image_sesh:
+    session['image_filename']='uniqueimagename'
+    return jsonify({"message":"dummynameset"}), 200
+    # return jsonify({
+    #     "message":image_sesh
+    # })
+@app.route('/getimagesession')
+def getimagesession():
     image_sesh=session.get('image_filename')
-    if not image_sesh:
-        return jsonify({"error":"unauthorized"}), 401
     return jsonify({
         "message":image_sesh
     })

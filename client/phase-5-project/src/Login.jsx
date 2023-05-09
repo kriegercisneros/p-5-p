@@ -94,11 +94,11 @@ function Login({user, setUser}){
     return(
       <div style={{
         // background: 'rgba(139, 131, 120, 0.5)',
-        backgroundImage: `url("https://restoredecorandmore.com/wp-content/uploads/2022/05/aesthetic-boho-iPhone-wallpaper-43.jpg")`,
+        backgroundImage: `url("https://restoredecorandmore.com/wp-content/uploads/2022/05/aesthetic-boho-iPhone-wallpaper-18.jpg")`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         height:'130vh',
-        width:'60vw',
+        width:'80vw',
         position: 'relative',
         borderRadius: '20px', 
         padding:'20px',
