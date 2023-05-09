@@ -50,6 +50,14 @@ class Image(db.Model, SerializerMixin):
     filename=db.Column(db.String(100))
     bucket=db.Column(db.String(100))
     region=db.Column(db.String(100))
+    text=db.Column(db.String(250))
+    negtext=db.Column(db.String(250))
+    style=db.Column(db.String(250))
+    clip=db.Column(db.String(250))
+    start=db.Column(db.Float)
+    end=db.Column(db.Float)
+    steps=db.Column(db.Integer)
+    cfg=db.Column(db.Integer)
 
 
 class Sketch(db.Model, SerializerMixin):

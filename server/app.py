@@ -27,9 +27,13 @@ def generate_ai():
     print(session)
     init_image = request.files['name'].read()
     text_prompt=request.form.get('text_prompts[0][text]')
+    # neg_text_prompt=request.form.get('text_prompts[1][text]')
     style_preset=request.form.get('style_preset')
     clip_guidance_preset=request.form.get('clip_guidance_preset')
-    image_strength=request.form.get('image_strength')
+    # image_strength=request.form.get('image_strength')
+    step_schedule_start=request.form.get('step_schedule_start')
+    step_schedule_end=request.form.get('step_schedule_end')
+
     steps=request.form.get('steps')
     cfg_scale=request.form.get('cfg_scale')
     imf=io.BytesIO(init_image)
@@ -52,17 +56,20 @@ def generate_ai():
         },
         data={
             # "image_strength": image_strength,
-
             "init_image_mode": "STEP_SCHEDULE",
+            "step_schedule_start":step_schedule_start,
+            "step_schedule_end": step_schedule_end,
+            # "init_image_mode": "IMAGE_STRENGTH",
             "text_prompts[0][text]":text_prompt,
             "text_prompts[0][weight]": 0.5,
-            "text_prompts[1][text]": "land, ground, dirt, grass",
-            "text_prompts[1][weight]": -0.9,
+            # "text_prompts[1][text]": neg_text_prompt,
+            # "text_prompts[1][weight]": 0.5,
             "cfg_scale": cfg_scale,
             "clip_guidance_preset": clip_guidance_preset,
             "style_preset":style_preset,
             "samples": 1,
-            "steps": steps
+            "steps": steps 
+            # "seed": 444445
         }
     )
     if response.status_code != 200:
@@ -119,6 +126,7 @@ def getimagesession():
 def saveimage():
     print('image saved')
     data=request.get_json()
+    print(data['cfg'])
     try:
         image = Image(
             filename=data['filename'],
@@ -126,6 +134,14 @@ def saveimage():
             original_filename=data['original_filename'],
             bucket=data['bucket'],
             region=data['region'],
+            text=data['text'],
+            # negtext=data['negtext'],
+            style=data['preset'],
+            clip=data['clip'],
+            start=data['start'],
+            end=data['end'],
+            steps=data['steps'],
+            cfg=data['cfg']
             )
         print(image)
         db.session.add(image)

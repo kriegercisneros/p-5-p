@@ -23,12 +23,16 @@ export default function Sketch({user}){
     const[sak, setsak]=useState(null)
     const[isDrawing, setIsDrawing]=useState(false)
     const[prompt, setprompt]=useState('')
+    const[negprompt, setnegprompt]=useState('')
     const [preset, setpreset]=useState('')
     const [clip, setclip]=useState('')
     const [strength, setstrength]=useState(0)
+    const [end, setend]=useState(0)
     const [steps, setsteps]=useState(0)
     const [cfg, setcfg]=useState(0)
     const [open, setOpen]=useState(false)
+    const [showGeneratedImage, setShowGeneratedImage] = useState(false);
+
 
     const canvasRef=useRef(null)
     const contextRef=useRef(null)
@@ -134,11 +138,15 @@ export default function Sketch({user}){
           const formData = new FormData();
           formData.append("name", myblob, "sketch.png");
           formData.append("text_prompts[0][text]", prompt);
+          formData.append("text_prompts[1][text]", negprompt)
           formData.append("style_preset", preset);
           formData.append("clip_guidance_preset", clip);
         //   formData.append("image_strength", strength);
           formData.append("steps", steps);
           formData.append("cfg_scale", cfg);
+          formData.append("step_schedule_start", strength);
+          formData.append("step_schedule_end", end)
+
           handleUpload(myblob);
           //above, send blob to the f/n to upload to aws.  then
           //sends the blob to py to contact api to gen upload
@@ -210,7 +218,15 @@ export default function Sketch({user}){
                 original_filename:'ofn',
                 filename:imgfn,
                 bucket:'phase-5-images',
-                region:'us-west-2'
+                region:'us-west-2', 
+                text:prompt, 
+                // negtext:negprompt,
+                preset:preset, 
+                clip:clip,
+                start:strength,
+                end:end,
+                steps:steps, 
+                cfg:cfg
             })
         })
         .then(r=>r.json())
@@ -238,6 +254,9 @@ export default function Sketch({user}){
     const textChange=(event) => {
         setprompt(event.target.value);
     };
+    // const negativeTextChange=(event) => {
+    //     setnegprompt(event.target.value);
+    // };
     const handlePresetChange = (event) => {
         setpreset(event.target.value);
     };
@@ -247,12 +266,17 @@ export default function Sketch({user}){
     const handleStrengthChange = (event) => {
         setstrength(event.target.value);
     };
+    const handleendchange = (event) => {
+        setend(event.target.value);
+    };
     const handleStepChange = (event) => {
         setsteps(event.target.value);
     };
     const handlecfgChange = (event) => {
         setcfg(event.target.value);
     };
+
+      
 
     return(
 <>
@@ -309,6 +333,7 @@ export default function Sketch({user}){
                 flexDirection:'row-reverse'
                 // bottomMargin:'20px',
             }}>
+                {/* {!showGeneratedImage ? ( */}
                 <div className="canvas-wrapper">
                     <canvas
                         style={{ 
@@ -325,7 +350,6 @@ export default function Sketch({user}){
                         ref={canvasRef}
                     />
                 </div>
-            {/* <button onClick={saveSketch}>Save Sketch</button> */}
                 <div className="params" style={{display:'flex', flexDirection:'column', gap:'10px'}}>
                 <button 
                     onClick={() => setOpen(!open)} 
@@ -342,6 +366,14 @@ export default function Sketch({user}){
                         onChange={textChange} 
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
                     ></input>
+                {/* <label htmlFor="clip-dropdown">Negative Prompt:</label>
+                        
+                        <input 
+                            type="text" 
+                            placeholder="negative prompt" 
+                            onChange={negativeTextChange} 
+                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
+                        ></input> */}
                     <div>
                         <label htmlFor="my-dropdown">Style Preset:</label>
                         <select 
@@ -387,7 +419,7 @@ export default function Sketch({user}){
                             <option value="SLOWEST">SLOWEST</option>
                         </select>
                     </div>
-                    <label htmlFor='strength'>Image Strength:</label>
+                    {/* <label htmlFor='strength'>Image Strength:</label>
                     <input 
                         id='strength' 
                         type="number" 
@@ -396,6 +428,30 @@ export default function Sketch({user}){
                         max="1" 
                         value={strength} 
                         onChange={handleStrengthChange} 
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
+                        
+                        /> */}
+                    <label htmlFor='start'>Step Schedule Start:</label>
+                    <input 
+                        id='start' 
+                        type="number" 
+                        step="0.05" 
+                        min="0.05" 
+                        max="1" 
+                        value={strength} 
+                        onChange={handleStrengthChange} 
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
+                        
+                        />
+                    <label htmlFor='end'>Step Schedule End:</label>
+                    <input 
+                        id='end' 
+                        type="number" 
+                        step="0.05" 
+                        min=".05" 
+                        max="1" 
+                        value={end} 
+                        onChange={handleendchange} 
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
                         
                         />
@@ -438,9 +494,6 @@ export default function Sketch({user}){
             }
 
             <div style={{display:'flex'}}>
-            {/* <div style={{}}>  */}
-
-
             <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
         <Transition.Child
