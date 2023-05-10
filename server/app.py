@@ -90,7 +90,7 @@ def generate_ai():
     # print(cfg_scale)
 #this is posting to the api through my requests library
     response = requests.post(
-        f"{api_host}/v1.5/generation/{engine_id}/image-to-image",
+        f"{api_host}/v1/generation/{engine_id}/image-to-image",
         headers={
             #is it v1 or v2?
             "Accept": "application/json",
@@ -327,6 +327,7 @@ def User_Logout():
 def posting_sketches():
     #the unique key will be the name of the sketch 
     data=request.get_json()
+    print(data)
     try:
         sketch=Sketch(
             original_filename='ofn',

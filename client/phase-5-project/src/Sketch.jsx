@@ -197,16 +197,17 @@ export default function Sketch({user}){
     const handleUpload = async (myblob) => {
         // console.log(myblob);
         const uniqueKey =`sketch-${Date.now()}.png`;
+      
         const fileWithUniqueName = new File([myblob], uniqueKey, { type: myblob.type });
-        console.log(fileWithUniqueName)
+       
         //this is the call to post the name to the database with unique key
         dbPost(uniqueKey);
+        // console.log(uniqueKey)
         //this is the f/n to upload to aws with the unique name and the configuration file
         uploadFile(fileWithUniqueName, config)
             .then((data) => console.log(data))
             .catch((err) => console.error(err));
     };
-
     const dbPost = (uniqueKey) =>{
         fetch('api/posting_sketches', {
             method: 'POST',
@@ -215,11 +216,11 @@ export default function Sketch({user}){
             }, 
             body: JSON.stringify({
                 filename:uniqueKey, 
-                user_id:user
+                user_id:userid
             })
           })
           .then(r=>r.json())
-          .then(data=>{setsketchid(data.sketch_id)})
+          .then(data=>setsketchid(data.sketch_id))
     }
     //maybe add this in to change text prompt
     
