@@ -10,7 +10,7 @@ export default function View(){
   const [selectedInstanceId, setSelectedInstanceId] = useState(null);
   const [allimagedata, setallimagedata]=useState({})
   const [hover,sethover]=useState(false)
-  console.log(allimagedata)
+  console.log(instances)
 
   const nav=useNavigate()
   const toggleInstanceVisibility = (instanceId) => {
@@ -196,31 +196,31 @@ export default function View(){
                     > 
                     <div style={{display:'flex', flexDirection:'row', alignItems:'flex-end'}}>
                       <h1 className="mt-6 text-center text-4xl" style={{color:'#e6bfb3'}}>Prompt</h1>
-                      <p className="mt-1 text-center text-2xl">{allimagedata.text}</p>
+                      <p className="mt-1 text-center text-2xl">{instance.images.text}</p>
                     </div>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'flex-end'}}>
                       <h1 className="mt-4 text-center text-4xl" style={{color:'#e6bfb3'}}>Style</h1>
-                      <p className="mt-1 text-center text-2xl"> {allimagedata.style}</p>
+                      <p className="mt-1 text-center text-2xl"> {instance.images.style}</p>
                     </div>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'flex-end'}}>
                       <h1 className="mt-4 text-center text-4xl" style={{color:'#e6bfb3'}}>CFG</h1>
-                      <p className="mt-1 text-center text-2xl">{allimagedata.cfg}</p>
+                      <p className="mt-1 text-center text-2xl">{instance.images.cfg}</p>
                     </div>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'flex-end'}}>
                       <h1 className="mt-4 text-center text-4xl" style={{color:'#e6bfb3'}}>Clip</h1>
-                      <p className="mt-1 text-center text-2xl">{allimagedata.clip}</p>
+                      <p className="mt-1 text-center text-2xl">{instance.images.clip}</p>
                     </div>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'flex-end'}}>
                       <h1 className="mt-4 text-center text-4xl" style={{color:'#e6bfb3'}}>steps</h1>
-                      <p className="mt-1 text-center text-2xl">{allimagedata.steps}</p>
+                      <p className="mt-1 text-center text-2xl">{instance.images.steps}</p>
                     </div>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'flex-end'}}>
                       <h1 className="mt-4 text-center text-4xl" style={{color:'#e6bfb3'}}>start</h1>
-                      <p className="mt-1 text-center text-2xl">{allimagedata.start}</p>
+                      <p className="mt-1 text-center text-2xl">{instance.images.start}</p>
                     </div>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'flex-end', paddingBottom:'20px'}}>
                       <h1 className="mt-4 text-center text-4xl" style={{color:'#e6bfb3'}}>end</h1>
-                      <p className="mt-1 text-center text-2xl">{allimagedata.end}</p>
+                      <p className="mt-1 text-center text-2xl">{instance.images.end}</p>
                     </div>
                   </div>
                   </Popover.Panel>

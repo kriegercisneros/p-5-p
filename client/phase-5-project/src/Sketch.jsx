@@ -316,7 +316,7 @@ export default function Sketch({user}){
         // backgroundImage: `url("https://restoredecorandmore.com/wp-content/uploads/2022/05/aesthetic-boho-iPhone-wallpaper-43.jpg")`,
         // backgroundRepeat: 'no-repeat',
         // backgroundSize: 'contain',
-        height:'130vh',
+        height:'100%',
         width:'100vw',
         position: 'relative',
         borderRadius: '20px', 

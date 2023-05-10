@@ -127,9 +127,9 @@ function Login({user, setUser}){
         borderRadius: '20px', 
         paddingBottom:'20px',
       }}> */}
-        <h1 className="mt-10 text-center text-4xl leading-9 tracking-tight" style={{color:'#e6bfb3'}}>Simple Sketch</h1>
+        <h1 className="mt-10 text-center text-6xl font-semibold leading-9 tracking-tight" style={{color:'#e6bfb3'}}>Simple Sketch</h1>
         {/* </div> */}
-        <h3 className="mt-5 text-center text-1xl leading-9 tracking-tight text-gray-900">Turn your idea into AI an masterpiece.</h3>
+        <h3 className="mt-10 text-center font-semibold text-3xl leading-9 tracking-tight text-gray-900">AKA, Making Blobs (whoa!) and Passing them around the Internet, with a little bit of fun ai image generation thrown in.</h3>
       </div>
       <div className ="flex min-h-full flex-1 flex-col justify-center px-6 py-1 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
