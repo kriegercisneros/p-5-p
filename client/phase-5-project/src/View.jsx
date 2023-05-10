@@ -10,7 +10,7 @@ export default function View(){
   const [selectedInstanceId, setSelectedInstanceId] = useState(null);
   const [allimagedata, setallimagedata]=useState({})
   const [hover,sethover]=useState(false)
-  console.log(instances)
+  console.log(userid)
 
   const nav=useNavigate()
   const toggleInstanceVisibility = (instanceId) => {
@@ -43,7 +43,7 @@ export default function View(){
             .then((response)=>response.json())
             .then((data)=>setInstances(data.instances))
     }, [userid]);
-
+// console.log(instances[0].images)
   //   useEffect(() => {
   //     fetch(`api/allimagedata/116`)
   //         .then((response)=>response.json())
@@ -118,6 +118,8 @@ export default function View(){
           // <li>
           <div className='mt-5 text-center' key={instance.id} style={{display:'flex'}}>
             <div className="flex items-center gap-x-6">
+            {/* <img className="h-16 w-16 rounded-full border" src="https://phase-5-images.s3.us-west-2.amazonaws.com/77846425c77144fbaf3bf99a1bb51eab.png" onClick={() => toggleInstanceVisibility(instance.id)} /> */}
+
             <img className="h-16 w-16 rounded-full border" src={`https://phase-5-images.s3.us-west-2.amazonaws.com/${instance.images.filename}`} onClick={() => toggleInstanceVisibility(instance.id)} />
             <div>
               <Popover className='Relative'>
@@ -139,6 +141,7 @@ export default function View(){
                           borderRadius: '10px',
                           marginRight: '10px',
                         }}
+                        // src="https://phase-5-images.s3.us-west-2.amazonaws.com/33bfbf4ef7c14fae9a39fbc0d6519bd1.png"
                         src={`https://phase-5-images.s3.us-west-2.amazonaws.com/${instance.images.filename}`}
                         alt="Instance Image"
                         // onMouseOver={displayImage}

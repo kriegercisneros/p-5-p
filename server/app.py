@@ -23,12 +23,11 @@ def generateaitext():
     clip_guidance_preset=request.form.get('clip_guidance_preset')
     # cfg_scale=request.form.get('cfg_scale')
     # steps=request.form.get('steps')
-
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/text-to-image",
         headers={
             #is it v1 or v2?
-            "Content-Type": "application/json",
+            # "Content-Type": "application/json",
             "Accept": "application/json",
             "Authorization": f"Bearer {api_key}"
         },
@@ -53,12 +52,23 @@ def generateaitext():
     )
     if response.status_code != 200:
         raise Exception("Non-200 response: " + str(response.text))
-
     data = response.json()
-
     for i, image in enumerate(data["artifacts"]):
         with open(f"./ai_images_upload/testing{i}.png", "wb") as f:
             f.write(base64.b64decode(image["base64"]))
+    s3=boto3.client('s3')
+    uniqueimagename=f"{uuid.uuid4().hex}.png"
+    print(uniqueimagename)  
+    #i might run into trouble here with image_filename used for both img2img and text2img
+    session['image_filename']=uniqueimagename
+    print(session)
+    s3.upload_file(
+        Filename="./ai_images_upload/testing0.png",
+        Bucket="phase-5-images",
+        Key=uniqueimagename,
+    )
+    # return send_file('./ai_images_upload/testing0.png', mimetype='image/png'); {'message':uniqueimagename}
+    return make_response({'message':uniqueimagename})
 
 
 
