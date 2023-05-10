@@ -151,7 +151,7 @@ export default function View(){
                           borderRadius: '10px',
                           marginRight: '10px',
                         }}
-                        src={`https://phase-5-images.s3.us-west-2.amazonaws.com/${instance.sketches.filename}`}
+                        src={instance.sketches != null ? `https://phase-5-images.s3.us-west-2.amazonaws.com/${instance.sketches.filename}`: ''}
                         alt="Instance Sketch"
                       />
                     </div>
