@@ -137,16 +137,16 @@ export default function Sketch({user}){
     };
     
     const generateaitext = ()=>{
-        // const formData = new FormData();
-        // formData.append("text_prompts[0][text]", prompt);
-        // formData.append("style_preset", preset);
-        // formData.append("clip_guidance_preset", clip);
-        // formData.append("steps", steps);
+        const formData = new FormData();
+        formData.append("text_prompts[0][text]", prompt);
+        formData.append("style_preset", preset);
+        formData.append("clip_guidance_preset", clip);
+        formData.append("steps", steps);
         // formData.append("cfg_scale", cfg);
 
         fetch('/api/generateaitext',{
             method:'POST',
-            // body:formData
+            body:formData
         })
         .then(r=>r.json)
         .then(setshowtextimg(true))
