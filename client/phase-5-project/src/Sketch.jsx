@@ -291,11 +291,10 @@ export default function Sketch({user}){
         borderRadius: '20px', 
         padding:'20px',
         display: 'flex',
-        alignItems: 'center',
+        // alignItems: 'center',
         justifyContent: 'center',
         margin: 'auto',
     }}>
-        
         <div className='can_prompt_p_wrapper' style={{
         display: "flex",
         flexDirection: "row",
@@ -304,27 +303,29 @@ export default function Sketch({user}){
         justifyContent: "center",
             // bottomMargin:'20px',
         }}>
-            <img 
-          onClick={()=>nav('/home')} 
-          style={{
-            height:'5vh', 
-            borderRadius:'5px',
-            position:'absolute',
-            left:'10px',
-            top:'10px'
-          }} 
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTixkKdh2YPXsBCpj4FI8wv52meCbA61G3MRw&usqp=CAU"></img>
-        <img 
+        <div style={{
+          backgroundColor: 'rgba(139, 131, 120, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'row',
+          justifyContent:'space-evenly',
+          width: '100vw',
+          borderRadius:'20px', 
+          position:'relative',
+          height:'80px'
+        }}>
+        <button 
+          onClick={()=>nav('/view')} 
+          className="flex justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+          style={{}}
+          >Creations</button>
+        <button
+          className="flex justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
           onClick={handleLogout} 
-          style={{
-            height:'5vh', 
-            borderRadius:'5px',
-            position:'absolute',
-            left:'60px',
-            top:'10px'
-          }} 
-          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAATlBMVEX///+EhIR6enp+fn7Dw8OOjo7w8PD4+PjHx8eBgYHAwMC0tLSzs7Pg4OCXl5fj4+PV1dWrq6vOzs7t7e2dnZ2JiYnX19dzc3Otra2kpKRP/JnrAAAEKElEQVR4nO3c61bbMBCFUUuKYzuQi5NQyPu/aDG4C1/UyniG6Jx0vv+wsivJMlSoKCzLsizLsizLsgirg5NVXp/O29yKfyUWuqYJ/lBXuSF/TS78UAa3QzXqCN8LL6fclnhqQud8mxsTTVHowgFxpmoKMYmqwndibs88XaELb7lBs5SFLvzKLZqmLWxKtKWoLXRhl5s0SV3oHNggbl69rNBMB/Gc2zSuErbdt35sbAB3DGGXckz0YNNUoWpMxNsw5F38SIj2NNWoHQ5ic8v9cX6g03DPecBHzWSaNmXuj/MDbUcL0YSMmZA/E/JnQv5MyJ8J+TMhfybkz4T8mZA/E/JnQv5MyJ8J+TMhfybMmc7hF2Dhs3/S+Da4wrfgwrPC94EVtt0BAw0iqrD9PEER5BMVVNj+OSIiJ2IKb19nYMRESOFteMhHSkQU3sYnZ4VEPGF1nR4NlhHxhGfvpomIeMJiNz/eLSECCoud6igiCqOjuPrtBlKoSsQUaq5FUKHiWkQV6o0irFCNiCvUmqjAQqUnKrJQZ6JCC1WI2EKNtQguVBhFdKH8cQMvFE9UfKGUSCAUrkUGoYxIIRRNVA6h5IlKIhQQWYTr1yKNcPVa5BGuHUUiYYzo039fzyQsNtObPN6J+9QXaQnrzR2qy5kw/efnWsKXcI9mwAUXsmgJ5/+6dyp5SwK90IXLwwsT0/QBhIk9kV/YJC59fABh4sqZBxA+/Bg+/jr8D56lidue6YXNNfHJuN5L5z9bpG9g4/rZ4jYjpi/vovr58Dgfw9RbKZdwH/kBOH2en0gYA27SX8YjPEZ+11Yv+Doa4T7ya6glQBphZIqGBVO0oBEeIyO4DEgi3K9cg10UwthTdCmQQrhym+gjEEbW4MKHzEf4wtXbRB+8cP020YcujLxsf2MNdoEL176qDcIWiraJPmiheA12IQsFr2qDgIWRbeK7a7ALVyh7k/kKVqgFhBXGXtVWTNECVih9VRuEKVTZJvoghfJXtUGIQoVXtUGAQo1XtUF4wsv8/19Wr8EuPOH8gJ4IiCicEgVrsAtROD4sKxtBUOGQuH6b6MMUfk1U4RQtYIXF5vNzSbaJPlTh5yhK12AXrLAbRfEa7MIVFrXCFC2ghUXykPqikIU6mZA/E/JnQv5MyJ8J+TMhfybkz4T8mZA/E/JnQv5MyJ8J+TMhfybkz4T8XYbC9MVZhJ2GJ6zSf75PWDs8CJi6zIax0SR1IX1HH1tVOTrLmbxFg67LGOh8lfsTjaqEbfetHwPRHjSbVy9rdto4eQXhnatj9yTKwpqk+kK4J6m2sCnBhlBdiLdVKAvDW27QLF1hANspulSF4YC2CAtdISRQU+gT10dmSk0YXk65LfF0hE1wO8QZ2iUXNk3whxrVpyAsr0/nxM2YlmVZlmVZlmVZ6v0Gplc8RLrMIFQAAAAASUVORK5CYII="></img>
-        <h1 className="mt-10 text-center text-9xl " style={{color:'#e6bfb3'}}>. . . Sketching . . .</h1>
+        >Logout</button>
+        <img className="h-14 w-14 rounded-full border" src={`https://phase-5-images.s3.us-west-2.amazonaws.com/download.jpg`} />
+        </div>
+        {/* <h1 className="mt-10 text-center text-9xl " style={{color:'#e6bfb3'}}>. . . Sketching . . .</h1> */}
 
             <div className='mt-10' style={{
                 display:'flex',

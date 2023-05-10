@@ -36,7 +36,7 @@ function Login({user, setUser}){
           body:JSON.stringify(data)
       })
       .then(r=>r.json())
-      .then(()=>nav('/home'))
+      .then(()=>nav('/sketch'))
   };
 
   useEffect(()=>{
@@ -48,7 +48,7 @@ function Login({user, setUser}){
   }, [])
 
   if(user){
-      return nav('/home')
+      return nav('/sketch')
   }
 
   function handleEmailChange(event) {
@@ -203,6 +203,7 @@ function Login({user, setUser}){
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500">Want to Try?</p>
+
           <Popover className="relative">
             <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
               <span>Sign Up!</span>

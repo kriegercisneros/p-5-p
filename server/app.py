@@ -204,6 +204,16 @@ def get_sketch(sketch_id):
     else:
         return make_response({"message": "Sketch not found"}, 404)
 
+@app.route('/allimagedata/<int:image_id>')
+def allimagedata(image_id):
+    data=Image.query.filter(Image.id==image_id).first()
+    if data:
+        print(data)
+        return jsonify(data.to_dict())
+    else:
+        return jsonify({"error": "data not found"}), 404
+
+
 #######################################################################################################
 ###########                         Begin of loggin authorization                           ###########
 #######################################################################################################
