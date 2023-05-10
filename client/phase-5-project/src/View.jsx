@@ -44,11 +44,11 @@ export default function View(){
             .then((data)=>setInstances(data.instances))
     }, [userid]);
 
-    useEffect(() => {
-      fetch(`api/allimagedata/116`)
-          .then((response)=>response.json())
-          .then((data)=>setallimagedata(data))
-  }, []);
+  //   useEffect(() => {
+  //     fetch(`api/allimagedata/116`)
+  //         .then((response)=>response.json())
+  //         .then((data)=>setallimagedata(data))
+  // }, []);
 
 
     // function displayImage(){

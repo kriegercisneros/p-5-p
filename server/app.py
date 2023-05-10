@@ -204,7 +204,7 @@ def saveinstance():
     try:
         inst=Instance(
             users_id=data['user_id'],
-            sketches_id=data['sketches_id'],
+            sketches_id=data.get('sketches_id', None),
             images_id=data['images_id']
         )
         db.session.add(inst)
@@ -219,13 +219,18 @@ def get_instances_by_user_id(users_id):
     instances_list = []
     for i in instances:
         # print(f"thisit{i.images.to_dict()}")
+        newvar=None
+        print(i)
+        if(i.sketches_id!=None):
+            newvar=i.sketches.to_dict()
         instance_dict = {
             'id': i.id,
             'user_id': i.users_id,
             'sketch_id': i.sketches_id,
             'image_id': i.images_id, 
             'images':i.images.to_dict(), 
-            'sketches':i.sketches.to_dict()
+            'sketches':newvar
+            #outside of this instance
         }
         instances_list.append(instance_dict)
     return jsonify(instances=instances_list)
