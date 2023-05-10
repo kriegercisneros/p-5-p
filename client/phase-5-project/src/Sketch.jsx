@@ -160,6 +160,7 @@ export default function Sketch({user}){
               .then((r) => r.json())
               .then((data) => {
                 setimgfn(data["message"]);
+                setShowGeneratedImage(true)
               })
               .then(console.log("Image uploaded successfully"));
           } else {
@@ -317,11 +318,11 @@ export default function Sketch({user}){
         }}>
         <button 
           onClick={()=>nav('/view')} 
-          className="flex justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+          className="flex justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-lg font-regular leading-6 text-grey shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
           style={{}}
           >Creations</button>
         <button
-          className="flex justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+          className="flex justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-lg font-regular leading-6 text-grey shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
           onClick={handleLogout} 
         >Logout</button>
         <img className="h-14 w-14 rounded-full border" src={`https://phase-5-images.s3.us-west-2.amazonaws.com/download.jpg`} />
@@ -337,7 +338,12 @@ export default function Sketch({user}){
                 // bottomMargin:'20px',
             }}>
                 {/* {!showGeneratedImage ? ( */}
-                <div className="canvas-wrapper">
+                {img ? 
+            (<div>
+                <img src={trial_1}/>
+                <br></br>
+                <button onClick={saveImage}>save image</button>
+            </div>):(<div className="canvas-wrapper">
                     <canvas
                         style={{ 
                             border: '6px solid #333',
@@ -352,7 +358,9 @@ export default function Sketch({user}){
                         onDoubleClick={clearCanvas}
                         ref={canvasRef}
                     />
-                </div>
+                </div>)
+            }
+                
                 <div className="params" style={{display:'flex', flexDirection:'column', gap:'10px'}}>
                 <button 
                     onClick={() => setOpen(!open)} 
@@ -484,17 +492,14 @@ export default function Sketch({user}){
                         onClick={saveSketch}
                         className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                     >Generate Image</button>
-                    <button onClick={showImage}>Show Me the Image!</button>
+                    {showGeneratedImage? (
+                    <button 
+                    onClick={showImage}
+                    className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+                    >Show Me the Image!</button>):(<h1></h1>)}
                 </div>
             </div>
 
-            {img ? 
-            (<div>
-                <img src={trial_1}/>
-                <br></br>
-                <button onClick={saveImage}>save image</button>
-            </div>):(<p></p>)
-            }
 
             <div style={{display:'flex'}}>
             <Transition.Root show={open} as={Fragment}>

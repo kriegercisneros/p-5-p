@@ -3,7 +3,7 @@
 import boto3
 import base64
 import json
-from app import upload_db
+# from app import upload_db
 from services import os, requests
 
 
@@ -26,11 +26,11 @@ def getModelList():
     print(payload)
 
 
-prompt='create a high resolution picture image of a luxary car in a studio setting showcasing its sleek lines and high-end features.'
+prompt="A beautiful and serene beach scene with clear blue skies and a calm ocean. On the soft, golden sand, a group of people is enjoying a tea party. They are sitting around a table with a vintage tea set, fancy teacups, and a variety of delicious treats like scones, pastries, and sandwiches. The table is decorated with a colorful tablecloth and flowers. Nearby, a few seagulls are watching the scene, and gentle waves are lapping at the shore."
 new_file_name = prompt.replace(" ", "")[:10]
 height = 512
 width = 512 
-steps = 15
+steps = 35
 def generateStableDiffusionImage(prompt, height, width, steps):
     url= f"{api_host}/v1/generation/{engine_id}/text-to-image"
     headers = {
@@ -41,7 +41,7 @@ def generateStableDiffusionImage(prompt, height, width, steps):
     payload={}
     payload['text_prompts'] = [{"text": f"{prompt}"}]
     payload['cfg_scale'] = 7
-    payload['clip_guidance_preset'] = 'FAST_BLUE'
+    payload['clip_guidance_preset'] = 'SLOWER'
     payload['height'] = height
     payload['width'] = width
     payload['samples'] = 1
@@ -78,7 +78,7 @@ def upload_asw():
         Key="new_test_upload_1.png",
     )
 upload_asw()
-upload_db()
+# upload_db()
 
-# generateStableDiffusionImage(prompt, height, width, steps)
+generateStableDiffusionImage(prompt, height, width, steps)
 # "v1_txt2img_{i}.png"
