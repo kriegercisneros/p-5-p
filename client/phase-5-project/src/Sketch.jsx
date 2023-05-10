@@ -2,6 +2,7 @@ import{ useRef, useEffect, useState, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { uploadFile } from "react-s3"
 import trial_1 from "../../../server/ai_images_download/trial_1.png"
+import testing0 from "../../../server/ai_images_upload/testing0.png"
 const S3_BUCKET = "phase-5-images";
 const REGION = "us-west-2";
 import { Dialog, Transition } from '@headlessui/react'
@@ -32,6 +33,11 @@ export default function Sketch({user}){
     const [cfg, setcfg]=useState(0)
     const [open, setOpen]=useState(false)
     const [showGeneratedImage, setShowGeneratedImage] = useState(false);
+
+    //this is the one for the button 
+    const [showtextimg, setshowtextimg]=useState(false)
+    //this is the one for the image display, like when the button is clicked
+    const [showtextimgdisplay, setshowtextimgdisplay]=useState(false)
 
 
     const canvasRef=useRef(null)
@@ -130,7 +136,21 @@ export default function Sketch({user}){
         context.fillRect(0, 0, canvas.width, canvas.height);
     };
     
-    
+    const generateaitext = ()=>{
+        // const formData = new FormData();
+        // formData.append("text_prompts[0][text]", prompt);
+        // formData.append("style_preset", preset);
+        // formData.append("clip_guidance_preset", clip);
+        // formData.append("steps", steps);
+        // formData.append("cfg_scale", cfg);
+
+        fetch('/api/generateaitext',{
+            method:'POST',
+            // body:formData
+        })
+        .then(r=>r.json)
+        .then(setshowtextimg(true))
+    }
 
     const saveSketch = async () => {
         const canvas = canvasRef.current;
@@ -208,6 +228,12 @@ export default function Sketch({user}){
         setimg(true)
         console.log('show ai image')
     }
+
+    function showtextimage(e){
+        e.preventDefault()
+        setshowtextimgdisplay(true)
+    }
+
     //function that saves the ai image name to the database
     function saveImage(){
         console.log(userid)
@@ -334,10 +360,22 @@ export default function Sketch({user}){
         <div style={{ paddingTop: '90px', width: '100%' }}>
             <button
                 className="flex w-full justify-center rounded-md bg-yellow-600 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
-                onClick={()=>console.log('t2t')}
+                onClick={generateaitext}
             >
                 Text to Text Model
             </button>
+            
+            {showtextimg? (
+                    <button 
+                    onClick={showtextimage}
+                    className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+                    >Show Me the Text Image!</button>):(<h1></h1>)}
+            {showtextimgdisplay?(<div>
+                <img src={testing0}/>
+                <br></br>
+                <button onClick={saveImage}>save image</button>
+            </div>):(<h1></h1>)}
+
         </div>
             <div className='mt-10' style={{
                 display:'flex',
