@@ -87,7 +87,7 @@ def generate_ai():
     style_preset=request.form.get('style_preset')
     clip_guidance_preset=request.form.get('clip_guidance_preset')
     # image_strength=request.form.get('image_strength')
-    step_schedule_start=request.form.get('step_schedule_start')
+    # step_schedule_start=request.form.get('step_schedule_start')
     step_schedule_end=request.form.get('step_schedule_end')
 
     steps=request.form.get('steps')
@@ -112,12 +112,12 @@ def generate_ai():
         },
         data={
             # "image_strength": image_strength,
-            "init_image_mode": "STEP_SCHEDULE",
-            "step_schedule_start":step_schedule_start,
-            "step_schedule_end": step_schedule_end,
-            # "init_image_mode": "IMAGE_STRENGTH",
+            # "init_image_mode": "STEP_SCHEDULE",
+            # "step_schedule_start":step_schedule_start,
+            # "step_schedule_end": step_schedule_end,
+            "init_image_mode": "IMAGE_STRENGTH",
             "text_prompts[0][text]":text_prompt,
-            "text_prompts[0][weight]": 0.5,
+            # "text_prompts[0][weight]": 0.5,
             # "text_prompts[1][text]": neg_text_prompt,
             # "text_prompts[1][weight]": 0.5,
             "cfg_scale": cfg_scale,

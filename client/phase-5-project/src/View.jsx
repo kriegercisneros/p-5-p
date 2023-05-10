@@ -43,22 +43,6 @@ export default function View(){
             .then((response)=>response.json())
             .then((data)=>setInstances(data.instances))
     }, [userid]);
-// console.log(instances[0].images)
-  //   useEffect(() => {
-  //     fetch(`api/allimagedata/116`)
-  //         .then((response)=>response.json())
-  //         .then((data)=>setallimagedata(data))
-  // }, []);
-
-
-    // function displayImage(){
-    //   fetch(`api/allimagedata/${instances[0].image_id}`)
-    //     .then(r=>r.json())
-    //     .then(data=>setallimagedata(data)), showData()
-    // }
-    // function showData(){
-    //   console.log(allimagedata)
-    // }
 
     return (
       <div
@@ -148,15 +132,15 @@ export default function View(){
                         // onMouseOut={()=>sethover(false)}
                         // onClick={()=>console.log(allimagedata)}
                       />
-                      <img
+                      {instance.sketches != null ?(<img
                         style={{
                           border: '4px solid #343a40',
                           borderRadius: '10px',
                           marginRight: '10px',
                         }}
-                        src={instance.sketches != null ? `https://phase-5-images.s3.us-west-2.amazonaws.com/${instance.sketches.filename}`: ''}
+                        src={`https://phase-5-images.s3.us-west-2.amazonaws.com/${instance.sketches.filename}`}
                         alt="Instance Sketch"
-                      />
+                      />):(<h1>🧡</h1>)}
                     </div>
                   </Popover.Panel>
                 </Transition>
