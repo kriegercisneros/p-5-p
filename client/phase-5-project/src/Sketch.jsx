@@ -130,6 +130,8 @@ export default function Sketch({user}){
         context.fillRect(0, 0, canvas.width, canvas.height);
     };
     
+    
+
     const saveSketch = async () => {
         const canvas = canvasRef.current;
         setimg(false);
@@ -251,6 +253,7 @@ export default function Sketch({user}){
         .then(data=>console.log(data))
     }
 
+
 //listeners for the form data
     const textChange=(event) => {
         setprompt(event.target.value);
@@ -328,13 +331,20 @@ export default function Sketch({user}){
         <img className="h-14 w-14 rounded-full border" src={`https://phase-5-images.s3.us-west-2.amazonaws.com/download.jpg`} />
         </div>
         {/* <h1 className="mt-10 text-center text-9xl " style={{color:'#e6bfb3'}}>. . . Sketching . . .</h1> */}
-
+        <div style={{ paddingTop: '90px', width: '100%' }}>
+            <button
+                className="flex w-full justify-center rounded-md bg-yellow-600 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+                onClick={()=>console.log('t2t')}
+            >
+                Text to Text Model
+            </button>
+        </div>
             <div className='mt-10' style={{
                 display:'flex',
                 width:'100%',
                 justifyContent:'space-evenly',
                 flexDirection:'row-reverse',
-                paddingTop:'80px'
+                // paddingTop:'0px'
                 // bottomMargin:'20px',
             }}>
                 {/* {!showGeneratedImage ? ( */}
