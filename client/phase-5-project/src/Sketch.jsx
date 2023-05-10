@@ -309,9 +309,10 @@ export default function Sketch({user}){
           alignItems: 'center',
           flexDirection: 'row',
           justifyContent:'space-evenly',
-          width: '100vw',
+          width: '100%',
           borderRadius:'20px', 
-          position:'relative',
+          position:'absolute',
+          top:0,
           height:'80px'
         }}>
         <button 
@@ -331,7 +332,8 @@ export default function Sketch({user}){
                 display:'flex',
                 width:'100%',
                 justifyContent:'space-evenly',
-                flexDirection:'row-reverse'
+                flexDirection:'row-reverse',
+                paddingTop:'80px'
                 // bottomMargin:'20px',
             }}>
                 {/* {!showGeneratedImage ? ( */}
