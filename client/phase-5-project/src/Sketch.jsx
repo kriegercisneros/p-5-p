@@ -372,9 +372,13 @@ export default function Sketch({user}){
 <>
     <div style={{
         background: 'rgba(139, 131, 120, 0.5)',
+        // backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgdlQe-jESXrHBrdrlw8cJKCmFbHc0ZNpbrQ&usqp=CAU")`,
+        backgroundImage: `url("https://img.freepik.com/premium-vector/retro-sun-burst-vintage-background-swirl-wallpaper-with-grunge-spiral-rays-circus-illustration_501173-1247.jpg?w=1060")`,
+
         // backgroundImage: `url("https://restoredecorandmore.com/wp-content/uploads/2022/05/aesthetic-boho-iPhone-wallpaper-43.jpg")`,
         // backgroundRepeat: 'no-repeat',
         // backgroundSize: 'contain',
+        
         height:'100%',
         width:'100vw',
         position: 'relative',
@@ -386,10 +390,13 @@ export default function Sketch({user}){
         margin: 'auto',
     }}>
         <div className='can_prompt_p_wrapper' style={{
+        background: 'rgba(139, 131, 120, 0.5)',
+        position: 'relative',
+        borderRadius:'20px',
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
-        width: "100%",
+        width: "100vw",
         justifyContent: "center",
             // bottomMargin:'20px',
         }}>
@@ -417,7 +424,7 @@ export default function Sketch({user}){
         <img className="h-14 w-14 rounded-full border" src={`https://phase-5-images.s3.us-west-2.amazonaws.com/download.jpg`} />
         </div>
         {/* <h1 className="mt-10 text-center text-9xl " style={{color:'#e6bfb3'}}>. . . Sketching . . .</h1> */}
-        <div style={{ paddingTop: '90px', width: '100%', display:'flex', height:'40vh', flexDirection:'column', justifyContent:'space-evenly' }}>
+        <div style={{ paddingTop: '90px', width: '40%', display:'flex', height:'40vh', flexDirection:'column', justifyContent:'space-evenly' }}>
             {/* this is for the text to image model */}
             <button
                 className="flex w-full justify-center rounded-md bg-pink-800 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"

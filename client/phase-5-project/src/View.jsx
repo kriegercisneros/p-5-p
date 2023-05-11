@@ -47,7 +47,9 @@ export default function View(){
     return (
       <div
         style={{
-          backgroundColor: 'rgba(139, 131, 120, 0.5)',
+          backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGFUAEcQ0X0DdTVJ79_kgx82kv0M1i7TEP5w&usqp=CAU")`,
+          
+          // backgroundColor: 'rgba(139, 131, 120, 0.5)',
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
@@ -84,10 +86,10 @@ export default function View(){
         <img className="h-14 w-14 rounded-full border" src={`https://phase-5-images.s3.us-west-2.amazonaws.com/download.jpg`} />
         </div>
 
-        <h1 className="mt-10 text-center text-9xl" style={{ color: 'grey' }}>
+        <h1 className="mt-10 text-center text-9xl" style={{ color: 'white', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)'}}>
           Creations
         </h1>
-        <div className="bg-white py-24 sm:py-32" style={{backgroundColor:'#e6bfb3'}}>
+        <div className="bg-white py-24 sm:py-32" style={{backgroundColor:'rgba(230, 191, 179, 0.8)', borderRadius:'20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)'}}>
           <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
             <div className="max-w-2xl">
               <h2 className="text-3xl font tracking-tight text-gray-900 sm:text-4xl" style={{color:'white'}}>You made some sweet stuff</h2>
@@ -107,7 +109,7 @@ export default function View(){
             <img className="h-16 w-16 rounded-full border" src={`https://phase-5-images.s3.us-west-2.amazonaws.com/${instance.images.filename}`} onClick={() => toggleInstanceVisibility(instance.id)} />
             <div>
               <Popover className='Relative'>
-                <Popover.Button > .Sketch and Image.
+                <Popover.Button className="hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-900" style={{textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)'}}> Image/s/
                   <Transition
                     as={Fragment}
                     enter="transition ease-out duration-900"
@@ -147,8 +149,8 @@ export default function View(){
                 </Popover.Button>
               </Popover>
               <Popover className='relative' >
-                    <Popover.Button onClick={()=>sethover(true)}>
-                      .Parameters.
+                    <Popover.Button onClick={()=>sethover(true)} style={{textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)'}} className="hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-900">
+                      Parameters
                     </Popover.Button>
                 {hover ? (
                 <>
@@ -161,10 +163,10 @@ export default function View(){
                   leaveFrom="opacity-50 translate-y-0"
                   leaveTo="opacity-0 translate-y-1"
                 >
-              <Popover.Panel className="absolute left-1/2 z-10 mt-5 flex w-screen max-w-max px-4" style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
+              <Popover.Panel className="absolute z-10 mt-5 flex w-screen max-w-max px-4" style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
               
               {/* <div className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5" style={{ backgroundColor: 'rgba(159, 151, 140, 0.25)'}}></div> */}
-                  <div className="xl:grid-cols-3" style={{ display: 'flex', alignItems: 'center', flexDirection:'column', backgroundColor:'white', borderRadius: '10px', padding: '20px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}
+                  <div className="xl:grid-cols-3" style={{ display: 'flex', alignItems: 'center', flexDirection:'column', backgroundColor:'rgba(255,255,255,.9)', borderRadius: '10px', padding: '20px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}
                   // style={{
                   //   display:'flex',
                   //   flexDirection:'column',
