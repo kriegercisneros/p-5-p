@@ -99,13 +99,13 @@ def generateaitext():
             # "init_image_mode": "IMAGE_STRENGTH",
             # "text_prompts[0][text]":'A beautiful and serene beach scene with clear blue skies and a calm ocean. On the soft, golden sand, a group of people is enjoying a tea party. They are sitting around a table with a vintage tea set, fancy teacups, and a variety of delicious treats like scones, pastries, and sandwiches. The table is decorated with a colorful tablecloth and flowers. Nearby, a few seagulls are watching the scene, and gentle waves are lapping at the shore.',
             # "text_prompts[0][weight]": 0.5,
-            "cfg_scale": 15,
+            "cfg_scale": 20,
             "clip_guidance_preset": clip_guidance_preset,
             "height":512,
             "width":512, 
             "samples": 1,
             "style_preset":style_preset,
-            "steps": 100 
+            "steps": 110 
         }
     )
     if response.status_code != 200:
