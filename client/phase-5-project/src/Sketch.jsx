@@ -139,8 +139,14 @@ export default function Sketch({user}){
     };
     
     const generateaiimage=()=>{
+        const formData = new FormData();
+        formData.append("text_prompts[0][text]", prompt);
+        formData.append("style_preset", preset);
+        formData.append("clip_guidance_preset", clip);
+
         fetch('/api/generateimgtoimg',{
-            method:'POST'
+            method:'POST', 
+            body:formData
         })
         .then(r=>r.json())
         .then(data=>{setimgfn(data.message); (setshowimageimg(true))})

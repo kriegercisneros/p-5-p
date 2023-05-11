@@ -18,6 +18,10 @@ if api_key is None:
 
 @app.route('/generateimgtoimg', methods=['POST'])
 def generateimgtoimg():
+    text_prompt=request.form.get('text_prompts[0][text]')
+    style_preset=request.form.get('style_preset')
+    clip_guidance_preset=request.form.get('clip_guidance_preset')
+
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/image-to-image",
         headers={
@@ -25,23 +29,23 @@ def generateimgtoimg():
             "Authorization": f"Bearer {api_key}"
         },
         files={
-            "init_image": open("../client/phase-5-project/src/files/testing.jpeg", "rb")
+            "init_image": open("../client/phase-5-project/src/files/jack2.jpeg", "rb")
         },
         data={
-            # "image_strength": 0.1,
+            "image_strength": 0.70,
             "init_image_mode": "IMAGE_STRENGTH",
-            "text_prompts[0][text]":"Einstein drinking tea in the park",
+            "text_prompts[0][text]":text_prompt,
             #heart prompt 
             # "text_prompts[0][text]": "Create a realistic, full-color rendering of a heart that appears to be floating in space, generate a stunning, space-themed background and coloring for the heart, the final output should be a high-resolution image that showcases the heart in all its glory, with vibrant colors and intricate details that make it seem like it's part of the universe.",
             #controls the resolution of the generated image
-            "cfg_scale": 20,
-            "clip_guidance_preset": "SLOWEST",
+            "cfg_scale": 30,
+            "clip_guidance_preset": clip_guidance_preset,
             #this could be an option to try 
             # "sampler":"DDPM",
             #seed parameter: allows you to control the randomness of the image generation process, and can be useful for debugging
-            "style_preset":"analog-film",
+            "style_preset":style_preset,
             "samples": 1,
-            "steps":35,
+            "steps":55,
         }
 )
     if response.status_code != 200:
