@@ -373,24 +373,26 @@ export default function Sketch({user}){
     <div style={{
         background: 'rgba(139, 131, 120, 0.5)',
         // backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgdlQe-jESXrHBrdrlw8cJKCmFbHc0ZNpbrQ&usqp=CAU")`,
-        backgroundImage: `url("https://img.freepik.com/premium-vector/retro-sun-burst-vintage-background-swirl-wallpaper-with-grunge-spiral-rays-circus-illustration_501173-1247.jpg?w=1060")`,
-
+        backgroundImage: `url("https://images.rawpixel.com/image_1300/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm0yNDUtYmItODAuanBn.jpg")`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
         // backgroundImage: `url("https://restoredecorandmore.com/wp-content/uploads/2022/05/aesthetic-boho-iPhone-wallpaper-43.jpg")`,
         // backgroundRepeat: 'no-repeat',
         // backgroundSize: 'contain',
         
-        height:'100%',
-        width:'100vw',
-        position: 'relative',
+        // height:'100%',
+        // width:'100vw',
+        // position: 'relative',
         borderRadius: '20px', 
         padding:'20px',
         display: 'flex',
-        // alignItems: 'center',
-        justifyContent: 'center',
-        margin: 'auto',
+        // // alignItems: 'center',
+        // justifyContent: 'center',
+        // margin: 'auto',
     }}>
         <div className='can_prompt_p_wrapper' style={{
-        background: 'rgba(139, 131, 120, 0.5)',
+        // background: 'rgba(255, 253, 239, 0.5)',
         position: 'relative',
         borderRadius:'20px',
         display: "flex",
@@ -401,7 +403,7 @@ export default function Sketch({user}){
             // bottomMargin:'20px',
         }}>
         <div style={{
-          backgroundColor: 'rgba(139, 131, 120, 0.5)',
+          backgroundColor: 'rgba(255, 253, 239, 0.5)',
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'row',
@@ -466,7 +468,6 @@ export default function Sketch({user}){
                     onClick={showImage}
                     className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                     >Show Me the Image!</button>):(<h1></h1>)}
-
         </div>
             <div className='mt-10' style={{
                 display:'flex',

@@ -94,11 +94,11 @@ function Login({user, setUser}){
     return(
       <div style={{
         // background: 'rgba(139, 131, 120, 0.5)',
-        backgroundImage: `url("https://restoredecorandmore.com/wp-content/uploads/2022/05/aesthetic-boho-iPhone-wallpaper-18.jpg")`,
+        backgroundImage: `url("https://rare-gallery.com/uploads/posts/536912-vintage-flower.jpg")`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
-        height:'130vh',
-        width:'80vw',
+        height:'150vh',
+        width:'100vw',
         position: 'relative',
         borderRadius: '20px', 
         padding:'20px',
@@ -108,11 +108,14 @@ function Login({user, setUser}){
         margin: 'auto',
       }}>
       <div style={{
-        position: "absolute",
-        top: "35%",
-        left: "50%",
+        position: "relative",
+        top: "25%",
+        left: "25%",
+        width:'50%',
         transform: "translate(-50%, -50%)",
-        background: 'rgba(139, 131, 120, 0.5)',
+        // background: 'rgba(139, 131, 120, 0.5)',
+        background: 'rgba(230, 222, 179, 0.4)',
+
         borderRadius: '20px', 
 
       }}>
@@ -127,9 +130,9 @@ function Login({user, setUser}){
         borderRadius: '20px', 
         paddingBottom:'20px',
       }}> */}
-        <h1 className="mt-10 text-center text-6xl font-semibold leading-9 tracking-tight" style={{color:'#e6bfb3'}}>Simple Sketch</h1>
+        <h1 className="mt-10 text-center text-6xl font-semibold leading-9 tracking-tight" style={{color:'#e6bfb3', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)'}}>Simple Sketch</h1>
         {/* </div> */}
-        <h3 className="mt-10 text-center font-semibold text-3xl leading-9 tracking-tight text-gray-900">AKA, Making Blobs (whoa!) and Passing them around the Internet, with a little bit of fun ai image generation thrown in.</h3>
+        <h3 className="mt-10 text-center font-semibold text-3xl leading-9 tracking-tight text-gray-900">Generate AI images in a multitude of ways.  Sign in and start creating.</h3>
       </div>
       <div className ="flex min-h-full flex-1 flex-col justify-center px-6 py-1 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -139,7 +142,7 @@ function Login({user, setUser}){
             alt="Your Company"
             style={{borderRadius: '140px', height:'30vh'}}
           /> */}
-          <h2 className="mt-2 text-center font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className="mt-2 text-center font-semibold leading-9 tracking-tight text-gray-900">
             Sign in to your account
           </h2>
         </div>
@@ -202,10 +205,10 @@ function Login({user, setUser}){
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm text-gray-500">Want to Try?</p>
+          <p className="mt-10 text-center text-sm text-white">Want to Try?</p>
 
           <Popover className="relative">
-            <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+            <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-yellow-500">
               <span>Sign Up!</span>
               {/* <ChevronDownIcon className="h-5 w-5" aria-hidden="true" /> */}
             </Popover.Button>
@@ -219,7 +222,7 @@ function Login({user, setUser}){
               leaveTo="opacity-0 translate-y-1"
             >
               <Popover.Panel className="absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4" >
-                <form onSubmit={handleSecSubmit} className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5" style={{ backgroundColor: 'rgba(159, 151, 140, 0.25)' }}>
+                <form onSubmit={handleSecSubmit} className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5" style={{ backgroundColor: 'rgba(230, 222, 179, 0.4)' }}>
                   <div className="p-4">
                     <div className="mb-4">
                       {/* <label htmlFor="email" className="block font-semibold text-gray-900 ">Email</label> */}

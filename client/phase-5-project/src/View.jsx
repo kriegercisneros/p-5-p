@@ -47,8 +47,8 @@ export default function View(){
     return (
       <div
         style={{
-          backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGFUAEcQ0X0DdTVJ79_kgx82kv0M1i7TEP5w&usqp=CAU")`,
-          
+          // backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGFUAEcQ0X0DdTVJ79_kgx82kv0M1i7TEP5w&usqp=CAU")`,
+          backgroundImage:`url("https://img.freepik.com/premium-photo/vintage-wallpaper-with-flowers-high-quality-nature-flowers-gardens_743855-10190.jpg")`,
           // backgroundColor: 'rgba(139, 131, 120, 0.5)',
           display: 'flex',
           alignItems: 'center',
@@ -70,11 +70,6 @@ export default function View(){
           position:'relative',
           height:'80px'
         }}>
-        <button 
-          onClick={()=>nav('/home')} 
-          className="flex justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
-          style={{}}
-          >Home</button>
         <button
           className="flex justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
           onClick={handleLogout} 
