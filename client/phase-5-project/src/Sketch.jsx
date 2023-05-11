@@ -349,13 +349,24 @@ export default function Sketch({user}){
           body: formData,
         })
             .then(r=>r.json())
-            .then(data=>{setimgfn(data.message); (setshowimageimg(true))})
+            .then(data=>{setimgfn(data.message); saveInstance(data.message);(setshowimageimg(true)); uploadimgAWS()})
         if (!uploadResponse.ok) {
           console.error('Upload failed');
         } else {
           console.log('Upload successful');
         }
       };
+    function uploadimgAWS(){
+        const uniqueKey =`sketch-${Date.now()}.png`;
+        console.log(uniqueKey)
+        //posting the "sketch" to the database
+        dbPost(uniqueKey)
+        const fileWithUniqueName = new File([selectedFile], uniqueKey, { type: selectedFile.type });
+        // uploadFile(selectedFile, config)
+        uploadFile(fileWithUniqueName, config)
+            .then((data) => console.log(data))
+            .catch((err) => console.error(err));
+    }
 
     return(
 <>
@@ -409,7 +420,7 @@ export default function Sketch({user}){
         <div style={{ paddingTop: '90px', width: '100%', display:'flex', height:'40vh', flexDirection:'column', justifyContent:'space-evenly' }}>
             {/* this is for the text to image model */}
             <button
-                className="flex w-full justify-center rounded-md bg-yellow-600 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+                className="flex w-full justify-center rounded-md bg-pink-800 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                 onClick={generateaitext}
             >Text2Image Model</button>
             {showtextimg? (
@@ -417,11 +428,11 @@ export default function Sketch({user}){
                     onClick={showtextimage}
                     className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                     >Show Me the Text Image!</button>):(<h1></h1>)}
-            {showtextimgdisplay?(<div>
+            {/* {showtextimgdisplay?(<div>
                 <img src={testing0}/>
                 <br></br>
                 <button onClick={saveImage}>save image</button>
-            </div>):(<h1></h1>)}
+            </div>):(<h1></h1>)} */}
             {/* this is for the image to image model */}
             {/* <button onClick={generateaiimage}>Image to Image</button> */}
 
@@ -433,15 +444,15 @@ export default function Sketch({user}){
                 <button
                 onClick={showimgimage}
                 >Show me the Image!</button>):(<h1></h1>)}
-            {showimageimgdisplay?(<div>
+            {/* {showimageimgdisplay?(<div style={{display:'flex'}}>
                 <img src={testing0}/>
                 <br></br>
                 <button onClick={saveImage}>save image</button>
-                </div>):(<h1></h1>)}
+                </div>):(<h1></h1>)} */}
 
             <button 
                 onClick={saveSketch}
-                className="flex w-full justify-center rounded-md bg-teal-600 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+                className="flex w-full justify-center rounded-md bg-pink-800 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                     >Sketch2Image</button>
                     {showGeneratedImage? (
                     <button 
@@ -618,6 +629,16 @@ export default function Sketch({user}){
             />
                 </div>
             </div>
+            {showimageimgdisplay?(<div style={{display:'flex'}}>
+                <img src={testing0}/>
+                <br></br>
+                <button onClick={saveImage}>save image</button>
+                </div>):(<h1></h1>)}
+            {showtextimgdisplay?(<div>
+                <img src={testing0}/>
+                <br></br>
+                <button onClick={saveImage}>save image</button>
+            </div>):(<h1></h1>)}
 
 
             <div style={{display:'flex'}}>
