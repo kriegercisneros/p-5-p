@@ -19,12 +19,12 @@ response = requests.post(
         "Authorization": f"Bearer {api_key}"
     },
     files={
-        "init_image": open("../client/phase-5-project/src/files/undefined.png", "rb")
+        "init_image": open("../client/phase-5-project/src/files/testing.jpeg", "rb")
     },
     data={
-        "image_strength": 0.1,
+        # "image_strength": 0.1,
         "init_image_mode": "IMAGE_STRENGTH",
-        "text_prompts[0][text]":"Transform a simple sketch of a Franciscan Tau cross into an iconic image that evokes the essence of Gothic Italy. Use contrasting dark colors to create a visually striking and inspiring image. The final artwork should blend the intricate aesthetics of Gothic architecture with visual representation of analog film, resulting in a unique and captivating visual experience.",
+        "text_prompts[0][text]":"wes anderson style image of a woman drinking tea in the park",
         #heart prompt 
         # "text_prompts[0][text]": "Create a realistic, full-color rendering of a heart that appears to be floating in space, generate a stunning, space-themed background and coloring for the heart, the final output should be a high-resolution image that showcases the heart in all its glory, with vibrant colors and intricate details that make it seem like it's part of the universe.",
         #controls the resolution of the generated image
@@ -35,7 +35,7 @@ response = requests.post(
         #seed parameter: allows you to control the randomness of the image generation process, and can be useful for debugging
         "style_preset":"analog-film",
         "samples": 1,
-        "steps": 150,
+        "steps":35,
     }
 )
 
