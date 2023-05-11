@@ -39,6 +39,8 @@ export default function Sketch({user}){
     //this is the one for the image display, like when the button is clicked
     const [showtextimgdisplay, setshowtextimgdisplay]=useState(false)
 
+    const [showimageimg, setshowimageimg]=useState(false)
+
 
     const canvasRef=useRef(null)
     const contextRef=useRef(null)
@@ -136,6 +138,14 @@ export default function Sketch({user}){
         context.fillRect(0, 0, canvas.width, canvas.height);
     };
     
+    const generateaiimage=()=>{
+        fetch('/api/generateimgtoimg',{
+            method:'POST'
+        })
+        .then(r=>r.json())
+        .then(data=>{setimgfn(data.message); (setshowimageimg(true))})
+    }
+
     const generateaitext = ()=>{
         const formData = new FormData();
         formData.append("text_prompts[0][text]", prompt);
@@ -359,13 +369,13 @@ export default function Sketch({user}){
         </div>
         {/* <h1 className="mt-10 text-center text-9xl " style={{color:'#e6bfb3'}}>. . . Sketching . . .</h1> */}
         <div style={{ paddingTop: '90px', width: '100%' }}>
+            {/* this is for the text to image model */}
             <button
                 className="flex w-full justify-center rounded-md bg-yellow-600 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                 onClick={generateaitext}
             >
                 Text to Text Model
             </button>
-            
             {showtextimg? (
                     <button 
                     onClick={showtextimage}
@@ -376,6 +386,17 @@ export default function Sketch({user}){
                 <br></br>
                 <button onClick={saveImage}>save image</button>
             </div>):(<h1></h1>)}
+            {/* this is for the image to image model */}
+            <button onClick={generateaiimage}>Image to Image</button>
+            {showimageimg ? (
+                <button
+                onClick={showtextimage}
+                >Show me the Image!</button>):(<h1></h1>)}
+            {showtextimgdisplay?(<div>
+                <img src={testing0}/>
+                <br></br>
+                <button onClick={saveImage}>save image</button>
+                </div>):(<h1></h1>)}
 
         </div>
             <div className='mt-10' style={{
