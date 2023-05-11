@@ -21,6 +21,7 @@ def generateimgtoimg():
     text_prompt=request.form.get('text_prompts[0][text]')
     style_preset=request.form.get('style_preset')
     clip_guidance_preset=request.form.get('clip_guidance_preset')
+    init_image = request.files['file']
 
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/image-to-image",
@@ -29,7 +30,9 @@ def generateimgtoimg():
             "Authorization": f"Bearer {api_key}"
         },
         files={
-            "init_image": open("../client/phase-5-project/src/files/jack2.jpeg", "rb")
+            # "init_image": open("../client/phase-5-project/src/files/jack2.jpeg", "rb")
+            "init_image": init_image
+
         },
         data={
             "image_strength": 0.70,

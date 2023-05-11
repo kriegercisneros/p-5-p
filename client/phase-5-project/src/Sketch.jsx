@@ -138,19 +138,19 @@ export default function Sketch({user}){
         context.fillRect(0, 0, canvas.width, canvas.height);
     };
     
-    const generateaiimage=()=>{
-        const formData = new FormData();
-        formData.append("text_prompts[0][text]", prompt);
-        formData.append("style_preset", preset);
-        formData.append("clip_guidance_preset", clip);
+    // const generateaiimage=()=>{
+    //     const formData = new FormData();
+    //     formData.append("text_prompts[0][text]", prompt);
+    //     formData.append("style_preset", preset);
+    //     formData.append("clip_guidance_preset", clip);
 
-        fetch('/api/generateimgtoimg',{
-            method:'POST', 
-            body:formData
-        })
-        .then(r=>r.json())
-        .then(data=>{setimgfn(data.message); (setshowimageimg(true))})
-    }
+    //     fetch('/api/generateimgtoimg',{
+    //         method:'POST', 
+    //         body:formData
+    //     })
+    //     .then(r=>r.json())
+    //     .then(data=>{setimgfn(data.message); (setshowimageimg(true))})
+    // }
 
     const generateaitext = ()=>{
         const formData = new FormData();
@@ -322,8 +322,35 @@ export default function Sketch({user}){
     const handlecfgChange = (event) => {
         setcfg(event.target.value);
     };
+    //code for uploading a file the db
 
-      
+    const [selectedFile, setSelectedFile]=useState('')
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+      };
+
+    const handleimageUpload = async () => {
+        if (!selectedFile) {
+          console.error('No file selected');
+          return;
+        }
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append("text_prompts[0][text]", prompt);
+        formData.append("style_preset", preset);
+        formData.append("clip_guidance_preset", clip);
+        const uploadResponse = await fetch('/api/generateimgtoimg', {
+          method: 'POST',
+          body: formData,
+        })
+            .then(r=>r.json())
+            .then(data=>{setimgfn(data.message); (setshowimageimg(true))})
+        if (!uploadResponse.ok) {
+          console.error('Upload failed');
+        } else {
+          console.log('Upload successful');
+        }
+      };
 
     return(
 <>
@@ -393,7 +420,7 @@ export default function Sketch({user}){
                 <button onClick={saveImage}>save image</button>
             </div>):(<h1></h1>)}
             {/* this is for the image to image model */}
-            <button onClick={generateaiimage}>Image to Image</button>
+            {/* <button onClick={generateaiimage}>Image to Image</button> */}
             {showimageimg ? (
                 <button
                 onClick={showtextimage}
@@ -403,6 +430,16 @@ export default function Sketch({user}){
                 <br></br>
                 <button onClick={saveImage}>save image</button>
                 </div>):(<h1></h1>)}
+
+            <div>
+            <input type="file" accept="image/jpeg" 
+            onChange={handleFileChange} 
+            />
+            <button 
+                onClick={handleimageUpload}
+                className="flex w-full justify-center rounded-md bg-pink-900 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+            >uploadfile</button>
+            </div>
 
         </div>
             <div className='mt-10' style={{
