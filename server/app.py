@@ -48,7 +48,7 @@ def generateimgtoimg():
             #seed parameter: allows you to control the randomness of the image generation process, and can be useful for debugging
             "style_preset":style_preset,
             "samples": 1,
-            "steps":55,
+            "steps":100,
         }
 )
     if response.status_code != 200:
@@ -105,7 +105,7 @@ def generateaitext():
             "width":512, 
             "samples": 1,
             "style_preset":style_preset,
-            "steps": 35 
+            "steps": 100 
         }
     )
     if response.status_code != 200:
