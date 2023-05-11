@@ -52,7 +52,7 @@ export default function View(){
           alignItems: 'center',
           flexDirection: 'column',
           width: '100vw',
-          height:'150vh',
+          height:'100%',
           borderRadius:'20px', 
           position:'relative'
         }}

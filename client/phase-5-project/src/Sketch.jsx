@@ -250,6 +250,11 @@ export default function Sketch({user}){
         e.preventDefault()
         setshowtextimgdisplay(true)
     }
+    const [showimageimgdisplay,setshowimageimgdisplay]=useState(false)
+    function showimgimage(e){
+        e.preventDefault()
+        setshowimageimgdisplay(true)
+    }
 
     //function that saves the ai image name to the database
     function saveImage(){
@@ -401,14 +406,12 @@ export default function Sketch({user}){
         <img className="h-14 w-14 rounded-full border" src={`https://phase-5-images.s3.us-west-2.amazonaws.com/download.jpg`} />
         </div>
         {/* <h1 className="mt-10 text-center text-9xl " style={{color:'#e6bfb3'}}>. . . Sketching . . .</h1> */}
-        <div style={{ paddingTop: '90px', width: '100%' }}>
+        <div style={{ paddingTop: '90px', width: '100%', display:'flex', height:'40vh', flexDirection:'column', justifyContent:'space-evenly' }}>
             {/* this is for the text to image model */}
             <button
                 className="flex w-full justify-center rounded-md bg-yellow-600 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                 onClick={generateaitext}
-            >
-                Text to Text Model
-            </button>
+            >Text2Image Model</button>
             {showtextimg? (
                     <button 
                     onClick={showtextimage}
@@ -421,25 +424,30 @@ export default function Sketch({user}){
             </div>):(<h1></h1>)}
             {/* this is for the image to image model */}
             {/* <button onClick={generateaiimage}>Image to Image</button> */}
+
+            <button 
+                onClick={handleimageUpload}
+                className="flex w-full justify-center rounded-md bg-pink-800 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+            >Image2Image Model</button>
             {showimageimg ? (
                 <button
-                onClick={showtextimage}
+                onClick={showimgimage}
                 >Show me the Image!</button>):(<h1></h1>)}
-            {showtextimgdisplay?(<div>
+            {showimageimgdisplay?(<div>
                 <img src={testing0}/>
                 <br></br>
                 <button onClick={saveImage}>save image</button>
                 </div>):(<h1></h1>)}
 
-            <div>
-            <input type="file" accept="image/jpeg" 
-            onChange={handleFileChange} 
-            />
             <button 
-                onClick={handleimageUpload}
-                className="flex w-full justify-center rounded-md bg-pink-900 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
-            >uploadfile</button>
-            </div>
+                onClick={saveSketch}
+                className="flex w-full justify-center rounded-md bg-teal-600 py-1.5 text-lg font-regular leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+                    >Sketch2Image</button>
+                    {showGeneratedImage? (
+                    <button 
+                    onClick={showImage}
+                    className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+                    >Show Me the Image!</button>):(<h1></h1>)}
 
         </div>
             <div className='mt-10' style={{
@@ -601,15 +609,13 @@ export default function Sketch({user}){
                         onChange={handlecfgChange} 
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
                         />
-                    <button 
+                    {/* <button 
                         onClick={saveSketch}
                         className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
-                    >Generate Image</button>
-                    {showGeneratedImage? (
-                    <button 
-                    onClick={showImage}
-                    className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
-                    >Show Me the Image!</button>):(<h1></h1>)}
+                    >Sketch2Image</button> */}
+                    <input type="file" accept="image/jpeg" 
+            onChange={handleFileChange} 
+            />
                 </div>
             </div>
 
