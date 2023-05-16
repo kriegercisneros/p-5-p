@@ -4,18 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
-import {
-  ArrowPathIcon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
-} from '@heroicons/react/24/outline'
 
-// function isValidEmail(email) {
-//   return /\S+@\S+\.\S+/.test(email);
-// }
 
 function Login({user, setUser}){
   const nav=useNavigate()
@@ -24,7 +13,6 @@ function Login({user, setUser}){
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
-  const [isValidForm, setIsValidForm] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm();
   const onSubmit = data => {
@@ -50,23 +38,15 @@ function Login({user, setUser}){
   if(user){
       return nav('/sketch')
   }
-
   function handleEmailChange(event) {
     setEmail(event.target.value);
   }
-
   function handlePasswordChange(event) {
     setPassword(event.target.value);
   }
-
-  // function handlePasswordConfirmChange(event) {
-  //   setPasswordConfirm(event.target.value);
-  // }
-
   function handleUsernameChange(event) {
     setUsername(event.target.value);
   }
-
   function handleSecSubmit(event) {
     event.preventDefault();
     const data = {
@@ -86,14 +66,8 @@ function Login({user, setUser}){
   .then(data=>console.log(data))
   }
 
-  // function validateForm() {
-  //   setIsValidForm(
-  //     isValidEmail(email) && password === passwordConfirm && username.trim().length > 0
-  //   );
-  // }
     return(
       <div style={{
-        // background: 'rgba(139, 131, 120, 0.5)',
         backgroundImage: `url("https://rare-gallery.com/uploads/posts/536912-vintage-flower.jpg")`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
@@ -113,7 +87,6 @@ function Login({user, setUser}){
         left: "25%",
         width:'50%',
         transform: "translate(-50%, -50%)",
-        // background: 'rgba(139, 131, 120, 0.5)',
         background: 'rgba(230, 222, 179, 0.4)',
 
         borderRadius: '20px', 
@@ -121,38 +94,19 @@ function Login({user, setUser}){
       }}>
         <div className="flex flex-col items-center justify-center">
       <div className= "flex min-h-full flex-1 flex-col justify-center px-15 py-20 lg:px-8">
-        {/* <div style={{
-        // position: "absolute",
-        top: "35%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        background: "rgba(54, 57, 63, 0.5)",
-        borderRadius: '20px', 
-        paddingBottom:'20px',
-      }}> */}
+        
         <h1 className="mt-10 text-center text-6xl font-semibold leading-9 tracking-tight" style={{color:'#e6bfb3', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)'}}>Simple Sketch</h1>
-        {/* </div> */}
         <h3 className="mt-10 text-center font-semibold text-3xl leading-9 tracking-tight text-gray-900">Generate AI images in a multitude of ways.  Sign in and start creating.</h3>
       </div>
       <div className ="flex min-h-full flex-1 flex-col justify-center px-6 py-1 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          {/* <img
-            className="mx-auto h-30 w-auto"
-            src="https://www.google.com/aclk?sa=l&ai=DChcSEwju2dyhi-b-AhXtB60GHT1nAfkYABAJGgJwdg&sig=AOD64_14QdsPxNJyM0aFJb0-LaZF7w2DKA&adurl&ctype=5&ved=2ahUKEwjri8yhi-b-AhULKN4AHVB9BZcQvhd6BQgBEIkB"
-            alt="Your Company"
-            style={{borderRadius: '140px', height:'30vh'}}
-          /> */}
           <h2 className="mt-2 text-center font-semibold leading-9 tracking-tight text-gray-900">
             Sign in to your account
           </h2>
         </div>
-
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" action="#" onSubmit={handleSubmit(onSubmit)}>
             <div>
-              {/* <label htmlFor="email" className="block text-sm font-medium leading-6 text-yellow-900">
-                Email address
-              </label> */}
               <div className="mt-2">
                 <input
                   id="email"
@@ -169,16 +123,6 @@ function Login({user, setUser}){
             </div>
 
             <div>
-              {/* <div>
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-yellow-900">
-                  Password
-                </label> */}
-                {/* <div className="text-sm">
-                  <a href="#" className="font-semibold text-yellow-600 hover:text-yellow-500">
-                    Forgot password?
-                  </a>
-                </div> */}
-              {/* </div> */}
               <div className="mt-2">
                 <input
                   id="password"
@@ -190,11 +134,9 @@ function Login({user, setUser}){
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
                   {...register("password_hash", { required: true })}
                   style={{ backgroundColor: 'rgba(255, 255, 255, 0.75)' }}
-                  // {errors.password && <span>This field is required</span>}
                 />
               </div>
             </div>
-
             <div>
               <button
                 type="submit"
@@ -204,13 +146,10 @@ function Login({user, setUser}){
               </button>
             </div>
           </form>
-
           <p className="mt-10 text-center text-sm text-white">Want to Try?</p>
-
           <Popover className="relative">
             <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-yellow-500">
               <span>Sign Up!</span>
-              {/* <ChevronDownIcon className="h-5 w-5" aria-hidden="true" /> */}
             </Popover.Button>
             <Transition
               as={Fragment}
@@ -225,15 +164,12 @@ function Login({user, setUser}){
                 <form onSubmit={handleSecSubmit} className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5" style={{ backgroundColor: 'rgba(230, 222, 179, 0.4)' }}>
                   <div className="p-4">
                     <div className="mb-4">
-                      {/* <label htmlFor="email" className="block font-semibold text-gray-900 ">Email</label> */}
                       <input placeholder="email" type="email" id="email" name="email" required className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6" value={email} onChange={handleEmailChange}/>
                     </div>
                     <div className="mb-4">
-                      {/* <label htmlFor="password" className="block font-semibold text-gray-900">Password</label> */}
                       <input placeholder="password" type="password" id="password" name="password" minLength="8" required className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6" value={password} onChange={handlePasswordChange}/>
                     </div>
                     <div className="mb-4">
-                      {/* <label htmlFor="username" className="block font-semibold text-gray-900">Username</label> */}
                       <input placeholder="username" type="text" id="username" name="username" required className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6" value={username} onChange={handleUsernameChange}/>
                     </div>
                     <button type="submit" className="bg-yellow-600 text-white rounded-lg py-2 px-4 hover:bg-yellow-700 transition-colors duration-300">Sign Up</button>

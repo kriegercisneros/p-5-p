@@ -1,17 +1,6 @@
-# from flask_sqlalchemy import SQLAlchemy
-# from sqlalchemy import MetaData
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 from services import bcrypted, db
-
-# from sqlalchemy.orm import validates
-# from sqlalchemy.ext.associationproxy import association_proxy
-# from sqlalchemy_serializer import SerializerMixin
-
-
-# db = SQLAlchemy(metadata=metadata)
-
-
 class User(db.Model, SerializerMixin):
     __tablename__='users'
 

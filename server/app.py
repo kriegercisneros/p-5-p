@@ -35,11 +35,9 @@ def generateimgtoimg():
 
         },
         data={
-            "image_strength": 0.70,
+            "image_strength": 0.80,
             "init_image_mode": "IMAGE_STRENGTH",
             "text_prompts[0][text]":text_prompt,
-            #heart prompt 
-            # "text_prompts[0][text]": "Create a realistic, full-color rendering of a heart that appears to be floating in space, generate a stunning, space-themed background and coloring for the heart, the final output should be a high-resolution image that showcases the heart in all its glory, with vibrant colors and intricate details that make it seem like it's part of the universe.",
             #controls the resolution of the generated image
             "cfg_scale": 30,
             "clip_guidance_preset": clip_guidance_preset,
@@ -48,7 +46,7 @@ def generateimgtoimg():
             #seed parameter: allows you to control the randomness of the image generation process, and can be useful for debugging
             "style_preset":style_preset,
             "samples": 1,
-            "steps":100,
+            "steps":120,
         }
 )
     if response.status_code != 200:
@@ -72,8 +70,6 @@ def generateimgtoimg():
     )
     return make_response({'message':uniqueimagename})
     
-
-
 @app.route('/generateaitext', methods=['POST'])
 def generateaitext():
     text_prompt=request.form.get('text_prompts[0][text]')
@@ -84,7 +80,6 @@ def generateaitext():
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/text-to-image",
         headers={
-            #is it v1 or v2?
             # "Content-Type": "application/json",
             "Accept": "application/json",
             "Authorization": f"Bearer {api_key}"
@@ -93,7 +88,6 @@ def generateaitext():
             "text_prompts": [
             {
                 "text": text_prompt
-                # "Create a stunning illustration of a girl skillfully making cupcakes in the kitchen while simultaneously performing impressive judo moves, wearing a martial arts uniform and a chef's apron, gracefully combining her culinary and martial arts talents. The background should depict a lively kitchen filled with baking tools and ingredients. Capture the intense energy and focus of the girl as she balances her dual passions. High-resolution, studio lighting."
             }
                 ],
             # "init_image_mode": "IMAGE_STRENGTH",
@@ -105,7 +99,7 @@ def generateaitext():
             "width":512, 
             "samples": 1,
             "style_preset":style_preset,
-            "steps": 110 
+            "steps": 130 
         }
     )
     if response.status_code != 200:
@@ -128,8 +122,6 @@ def generateaitext():
     # return send_file('./ai_images_upload/testing0.png', mimetype='image/png'); {'message':uniqueimagename}
     return make_response({'message':uniqueimagename})
 
-
-
 @app.route('/generate-ai', methods=['POST'])
 def generate_ai():
     #request.data is used to access raw http data from a post request
@@ -151,17 +143,10 @@ def generate_ai():
     steps=request.form.get('steps')
     cfg_scale=request.form.get('cfg_scale')
     imf=io.BytesIO(init_image)
-    # print(imf)
-    # print(text_prompt)
-    # print(style_preset)
-    # print(clip_guidance_preset)
-    # print(image_strength)
-    # print(cfg_scale)
 #this is posting to the api through my requests library
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/image-to-image",
         headers={
-            #is it v1 or v2?
             "Accept": "application/json",
             "Authorization": f"Bearer {api_key}"
         },
@@ -208,18 +193,6 @@ def generate_ai():
     )
     return send_file('./ai_images_download/trial_1.png', mimetype='image/png'); {'message':uniqueimagename}
 
-# def upload_asw(): 
-#     s3=boto3.client('s3')
-#     uniqueimagename=f"{uuid.uuid4().hex}.png"
-#     print(uniqueimagename)  
-#     session['image_filename']=uniqueimagename
-#     print(session)
-#     s3.upload_file(
-#         Filename="./ai_images_download/trial_1.png",
-#         Bucket="phase-5-images",
-#         Key=uniqueimagename,
-#     )
-
 @app.route('/imagesession')
 def imagesession():
     # image_sesh=session.get('image_filename')
@@ -249,7 +222,6 @@ def saveimage():
             bucket=data['bucket'],
             region=data['region'],
             text=data['text'],
-            # negtext=data['negtext'],
             style=data['preset'],
             clip=data['clip'],
             start=data['start'],
@@ -268,7 +240,6 @@ def saveimage():
 @app.route('/saveinstance', methods=['POST'])
 def saveinstance():
     data=request.get_json()
-    # print(data)
     try:
         inst=Instance(
             users_id=data['user_id'],
@@ -286,7 +257,6 @@ def get_instances_by_user_id(users_id):
     instances = Instance.query.filter_by(users_id=users_id).all()
     instances_list = []
     for i in instances:
-        # print(f"thisit{i.images.to_dict()}")
         newvar=None
         print(i)
         if(i.sketches_id!=None):
@@ -298,7 +268,6 @@ def get_instances_by_user_id(users_id):
             'image_id': i.images_id, 
             'images':i.images.to_dict(), 
             'sketches':newvar
-            #outside of this instance
         }
         instances_list.append(instance_dict)
     return jsonify(instances=instances_list)
@@ -308,7 +277,6 @@ def get_image(image_id):
     image = Image.query.get(image_id)
     if image:
         filename = image.filename
-        # print(filename)
         return make_response({"filename": filename})
     else:
         return make_response({"message": "Sketch not found"}, 404)
@@ -381,11 +349,9 @@ def users():
                 email=email,
                 username=data['username']
             )
-            #my password hash is in model
             user.password_hash = password
             db.session.add(user)
             db.session.commit()
-            # print(user.id)
             #setting sessions id here to equal the new user_id that we JUST CREATED!
             session['user_id'] = user.id
             return make_response(jsonify(user.to_dict(), {"message":"registered successfully"}), 201)

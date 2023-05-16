@@ -8,23 +8,17 @@ const REGION = "us-west-2";
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
-export default function Sketch({user}){
+export default function Sketch(){
     const [img, setimg]=useState(false)
     const [imgfn,setimgfn]=useState('')
-    const [workingAiImg, setWorkingAiImg]=useState(trial_1)
-    //not sure if i even need this state above or the state below
-    //sketchid=state of the sketch id that was just posted
     const [sketchid, setsketchid]=useState (undefined)
-    //imgid=state of the image id that was just posted
-    //this one captures the state that i need so user id can persist
-    //between refreshes
     const [userid, setUserid]=useState(undefined)
     const[updatedimg, setupdatedimg]=useState(false)
     const [ak, setak]=useState(null)
     const[sak, setsak]=useState(null)
     const[isDrawing, setIsDrawing]=useState(false)
     const[prompt, setprompt]=useState('')
-    const[negprompt, setnegprompt]=useState('')
+    // const[negprompt, setnegprompt]=useState('')
     const [preset, setpreset]=useState('')
     const [clip, setclip]=useState('')
     const [strength, setstrength]=useState(0)
@@ -33,22 +27,18 @@ export default function Sketch({user}){
     const [cfg, setcfg]=useState(0)
     const [open, setOpen]=useState(false)
     const [showGeneratedImage, setShowGeneratedImage] = useState(false);
-
     //this is the one for the button 
     const [showtextimg, setshowtextimg]=useState(false)
     //this is the one for the image display, like when the button is clicked
     const [showtextimgdisplay, setshowtextimgdisplay]=useState(false)
-
     const [showimageimg, setshowimageimg]=useState(false)
+
+    const [selectedFile, setSelectedFile]=useState('')
 
 
     const canvasRef=useRef(null)
     const contextRef=useRef(null)
 
-    console.log(userid)
-    console.log(imgfn)
-    console.log(sketchid)
-    
     const config = {
         bucketName: S3_BUCKET,
         region: REGION, 
@@ -65,9 +55,9 @@ export default function Sketch({user}){
           }
         })
         .then(() => {
-          nav('/login'); // Navigate to login page after logout
+          nav('/login'); 
         })
-        .catch(error => console.log(error)); // Handle any errors
+        .catch(error => console.log(error)); 
       }
 
     //fetching the access keys for AWS
@@ -76,15 +66,7 @@ export default function Sketch({user}){
         .then(data=>{
             setak(data.access_key); 
             setsak(data.secret_access_key)})
-//getting the current name of the image sent to aws)
-    // useEffect(()=>{
-    //     fetch('/api/imagesession')
-    //     .then(r=>r.json())
-    //     .then(data=>{
-    //         setimgfn(data['message'])
-    //         })
-    // }, [])
-//setting the current state of the userid
+
     useEffect(()=>{
         fetch('api/info')
         .then(r=>r.json())
@@ -99,11 +81,6 @@ export default function Sketch({user}){
         canvas.height=512;
         canvas.style.width='512px' ;
         canvas.style.height='512px' ;
-
-        // canvas.width = window.innerWidth *2;
-        // canvas.height = window.innerHeight *2;
-        // canvas.style.width = `${window.innerWidth}px`;
-        // canvas.style.height = `${window.innerHeight}px`;
 
         const context=canvas.getContext('2d')
         context.scale(1,1)
@@ -137,20 +114,6 @@ export default function Sketch({user}){
         context.fillStyle = "white";
         context.fillRect(0, 0, canvas.width, canvas.height);
     };
-    
-    // const generateaiimage=()=>{
-    //     const formData = new FormData();
-    //     formData.append("text_prompts[0][text]", prompt);
-    //     formData.append("style_preset", preset);
-    //     formData.append("clip_guidance_preset", clip);
-
-    //     fetch('/api/generateimgtoimg',{
-    //         method:'POST', 
-    //         body:formData
-    //     })
-    //     .then(r=>r.json())
-    //     .then(data=>{setimgfn(data.message); (setshowimageimg(true))})
-    // }
 
     const generateaitext = ()=>{
         const formData = new FormData();
@@ -176,7 +139,6 @@ export default function Sketch({user}){
           const formData = new FormData();
           formData.append("name", myblob, "sketch.png");
           formData.append("text_prompts[0][text]", prompt);
-          formData.append("text_prompts[1][text]", negprompt)
           formData.append("style_preset", preset);
           formData.append("clip_guidance_preset", clip);
         //   formData.append("image_strength", strength);
@@ -204,8 +166,6 @@ export default function Sketch({user}){
           } else {
             console.error("Image upload failed");
           }
-          //sets the current image in state so i can display it
-          setWorkingAiImg(trial_1);
         }, "image/png");
       };
       
@@ -213,12 +173,9 @@ export default function Sketch({user}){
     const handleUpload = async (myblob) => {
         // console.log(myblob);
         const uniqueKey =`sketch-${Date.now()}.png`;
-      
         const fileWithUniqueName = new File([myblob], uniqueKey, { type: myblob.type });
-       
         //this is the call to post the name to the database with unique key
         dbPost(uniqueKey);
-        // console.log(uniqueKey)
         //this is the f/n to upload to aws with the unique name and the configuration file
         uploadFile(fileWithUniqueName, config)
             .then((data) => console.log(data))
@@ -238,7 +195,6 @@ export default function Sketch({user}){
           .then(r=>r.json())
           .then(data=>setsketchid(data.sketch_id))
     }
-    //maybe add this in to change text prompt
     
     function showImage(e){
         e.preventDefault()
@@ -255,7 +211,6 @@ export default function Sketch({user}){
         e.preventDefault()
         setshowimageimgdisplay(true)
     }
-
     //function that saves the ai image name to the database
     function saveImage(){
         console.log(userid)
@@ -271,7 +226,6 @@ export default function Sketch({user}){
                 bucket:'phase-5-images',
                 region:'us-west-2', 
                 text:prompt, 
-                // negtext:negprompt,
                 preset:preset, 
                 clip:clip,
                 start:strength,
@@ -301,14 +255,10 @@ export default function Sketch({user}){
         .then(data=>console.log(data))
     }
 
-
 //listeners for the form data
     const textChange=(event) => {
         setprompt(event.target.value);
     };
-    // const negativeTextChange=(event) => {
-    //     setnegprompt(event.target.value);
-    // };
     const handlePresetChange = (event) => {
         setpreset(event.target.value);
     };
@@ -327,13 +277,11 @@ export default function Sketch({user}){
     const handlecfgChange = (event) => {
         setcfg(event.target.value);
     };
-    //code for uploading a file the db
 
-    const [selectedFile, setSelectedFile]=useState('')
+    //code for uploading a file the db
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
       };
-
     const handleimageUpload = async () => {
         if (!selectedFile) {
           console.error('No file selected');
@@ -372,27 +320,15 @@ export default function Sketch({user}){
 <>
     <div style={{
         background: 'rgba(139, 131, 120, 0.5)',
-        // backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgdlQe-jESXrHBrdrlw8cJKCmFbHc0ZNpbrQ&usqp=CAU")`,
         backgroundImage: `url("https://images.rawpixel.com/image_1300/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm0yNDUtYmItODAuanBn.jpg")`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
-        // backgroundImage: `url("https://restoredecorandmore.com/wp-content/uploads/2022/05/aesthetic-boho-iPhone-wallpaper-43.jpg")`,
-        // backgroundRepeat: 'no-repeat',
-        // backgroundSize: 'contain',
-        
-        // height:'100%',
-        // width:'100vw',
-        // position: 'relative',
         borderRadius: '20px', 
         padding:'20px',
         display: 'flex',
-        // // alignItems: 'center',
-        // justifyContent: 'center',
-        // margin: 'auto',
     }}>
         <div className='can_prompt_p_wrapper' style={{
-        // background: 'rgba(255, 253, 239, 0.5)',
         position: 'relative',
         borderRadius:'20px',
         display: "flex",
@@ -400,7 +336,6 @@ export default function Sketch({user}){
         flexWrap: "wrap",
         width: "100vw",
         justifyContent: "center",
-            // bottomMargin:'20px',
         }}>
         <div style={{
           backgroundColor: 'rgba(255, 253, 239, 0.5)',
@@ -425,7 +360,6 @@ export default function Sketch({user}){
         >Logout</button>
         <img className="h-14 w-14 rounded-full border" src={`https://phase-5-images.s3.us-west-2.amazonaws.com/download.jpg`} />
         </div>
-        {/* <h1 className="mt-10 text-center text-9xl " style={{color:'#e6bfb3'}}>. . . Sketching . . .</h1> */}
         <div style={{ paddingTop: '90px', width: '40%', display:'flex', height:'40vh', flexDirection:'column', justifyContent:'space-evenly' }}>
             {/* this is for the text to image model */}
             <button
@@ -437,13 +371,6 @@ export default function Sketch({user}){
                     onClick={showtextimage}
                     className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                     >Show Me the Text Image!</button>):(<h1></h1>)}
-            {/* {showtextimgdisplay?(<div>
-                <img src={testing0}/>
-                <br></br>
-                <button onClick={saveImage}>save image</button>
-            </div>):(<h1></h1>)} */}
-            {/* this is for the image to image model */}
-            {/* <button onClick={generateaiimage}>Image to Image</button> */}
 
             <button 
                 onClick={handleimageUpload}
@@ -453,11 +380,6 @@ export default function Sketch({user}){
                 <button
                 onClick={showimgimage}
                 >Show me the Image!</button>):(<h1></h1>)}
-            {/* {showimageimgdisplay?(<div style={{display:'flex'}}>
-                <img src={testing0}/>
-                <br></br>
-                <button onClick={saveImage}>save image</button>
-                </div>):(<h1></h1>)} */}
 
             <button 
                 onClick={saveSketch}
@@ -474,10 +396,7 @@ export default function Sketch({user}){
                 width:'100%',
                 justifyContent:'space-evenly',
                 flexDirection:'row-reverse',
-                // paddingTop:'0px'
-                // bottomMargin:'20px',
             }}>
-                {/* {!showGeneratedImage ? ( */}
                 {img ? 
             (<div>
                 <img src={trial_1}/>
@@ -517,14 +436,6 @@ export default function Sketch({user}){
                         onChange={textChange} 
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
                     ></input>
-                {/* <label htmlFor="clip-dropdown">Negative Prompt:</label>
-                        
-                        <input 
-                            type="text" 
-                            placeholder="negative prompt" 
-                            onChange={negativeTextChange} 
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
-                        ></input> */}
                     <div>
                         <label htmlFor="my-dropdown">Style Preset:</label>
                         <select 
@@ -570,18 +481,6 @@ export default function Sketch({user}){
                             <option value="SLOWEST">SLOWEST</option>
                         </select>
                     </div>
-                    {/* <label htmlFor='strength'>Image Strength:</label>
-                    <input 
-                        id='strength' 
-                        type="number" 
-                        step="0.001" 
-                        min="0" 
-                        max="1" 
-                        value={strength} 
-                        onChange={handleStrengthChange} 
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
-                        
-                        /> */}
                     <label htmlFor='start'>Step Schedule Start:</label>
                     <input 
                         id='start' 
@@ -628,10 +527,6 @@ export default function Sketch({user}){
                         onChange={handlecfgChange} 
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-600 sm:text-sm sm:leading-6"
                         />
-                    {/* <button 
-                        onClick={saveSketch}
-                        className="flex w-full justify-center rounded-md bg-yellow-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
-                    >Sketch2Image</button> */}
                     <input type="file" accept="image/jpeg" 
             onChange={handleFileChange} 
             />
@@ -647,8 +542,6 @@ export default function Sketch({user}){
                 <br></br>
                 <button onClick={saveImage}>save image</button>
             </div>):(<h1></h1>)}
-
-
             <div style={{display:'flex'}}>
             <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -713,7 +606,6 @@ export default function Sketch({user}){
                             <p>Provides additional guidance to the model. The CLIP model is a machine learning model that can understand the context of an image and provide additional guidance to the image generation process.</p> 
                         <h1 className="mt-4 text-left text-3xl leading-9 tracking-tight" style={{color:'#e6bfb3'}}>Image Strength</h1> 
                             <p>Controls the strength of the sketch on the AI model. Higher the value, stronger the influence.</p> 
-                        {/* <h1 className="mt-10 text-left text-3xl leading-9 tracking-tight" style={{color:'#e6bfb3'}}>Init Image Mode</h1> 
                             <p>This parameter controls how the input image should be used to generate the output. Setting this to "IMAGE_STRENGTH" will result in a blending of the input image with the generated output. Setting it to "NOISE" will ignore the input image and generate an image purely from noise.</p>  */}
                         <h1 className="mt-10 text-left text-3xl leading-9 tracking-tight" style={{color:'#e6bfb3'}}>Steps</h1> 
                             <p>Increasing steps can result in a more accurate and detailed output, but may also require more computational resources.</p>
@@ -729,11 +621,9 @@ export default function Sketch({user}){
         </div>
       </Dialog>
     </Transition.Root>
-                
-
-            </div>
 </div>
 </div>
-        </>
-    )
+</div>
+</>
+)
 }

@@ -8,7 +8,6 @@ export default function View(){
   const [instances, setInstances] = useState([]);
   const [userid, setUserid]=useState(undefined)
   const [selectedInstanceId, setSelectedInstanceId] = useState(null);
-  const [allimagedata, setallimagedata]=useState({})
   const [hover,sethover]=useState(false)
   console.log(userid)
 
@@ -26,9 +25,9 @@ export default function View(){
       }
     })
     .then(() => {
-      nav('/login'); // Navigate to login page after logout
+      nav('/login'); 
     })
-    .catch(error => console.log(error)); // Handle any errors
+    .catch(error => console.log(error)); 
   }
     useEffect(()=>{
         fetch('api/info')
@@ -47,9 +46,7 @@ export default function View(){
     return (
       <div
         style={{
-          // backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGFUAEcQ0X0DdTVJ79_kgx82kv0M1i7TEP5w&usqp=CAU")`,
           backgroundImage:`url("https://img.freepik.com/premium-photo/vintage-wallpaper-with-flowers-high-quality-nature-flowers-gardens_743855-10190.jpg")`,
-          // backgroundColor: 'rgba(139, 131, 120, 0.5)',
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
@@ -96,11 +93,8 @@ export default function View(){
         <ul role="list" className="grid gap-x-8 gap-y-12 sm:grid-cols-3 sm:gap-y-16 xl:col-span-2">
         {instances.length > 0 ? (
           instances.map((instance) => (
-          // <li>
           <div className='mt-5 text-center' key={instance.id} style={{display:'flex'}}>
             <div className="flex items-center gap-x-6">
-            {/* <img className="h-16 w-16 rounded-full border" src="https://phase-5-images.s3.us-west-2.amazonaws.com/77846425c77144fbaf3bf99a1bb51eab.png" onClick={() => toggleInstanceVisibility(instance.id)} /> */}
-
             <img className="h-16 w-16 rounded-full border" src={`https://phase-5-images.s3.us-west-2.amazonaws.com/${instance.images.filename}`} onClick={() => toggleInstanceVisibility(instance.id)} />
             <div>
               <Popover className='Relative'>
@@ -122,12 +116,8 @@ export default function View(){
                           borderRadius: '10px',
                           marginRight: '10px',
                         }}
-                        // src="https://phase-5-images.s3.us-west-2.amazonaws.com/33bfbf4ef7c14fae9a39fbc0d6519bd1.png"
                         src={`https://phase-5-images.s3.us-west-2.amazonaws.com/${instance.images.filename}`}
                         alt="Instance Image"
-                        // onMouseOver={displayImage}
-                        // onMouseOut={()=>sethover(false)}
-                        // onClick={()=>console.log(allimagedata)}
                       />
                       {instance.sketches != null ?(<img
                         style={{
@@ -159,24 +149,7 @@ export default function View(){
                   leaveTo="opacity-0 translate-y-1"
                 >
               <Popover.Panel className="absolute z-10 mt-5 flex w-screen max-w-max px-4" style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-              
-              {/* <div className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5" style={{ backgroundColor: 'rgba(159, 151, 140, 0.25)'}}></div> */}
                   <div className="xl:grid-cols-3" style={{ display: 'flex', alignItems: 'center', flexDirection:'column', backgroundColor:'rgba(255,255,255,.9)', borderRadius: '10px', padding: '20px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}
-                  // style={{
-                  //   display:'flex',
-                  //   flexDirection:'column',
-                  //   flexWrap:'wrap',
-                  //   alignContent:'center',
-                  //   aligbItems:'center',
-                  //   position: "relative",
-                  //   top: "35%",
-                  //   left: "20%",
-                  //   // transform: "translate(-50%, -50%)",
-                  //   // background: 'rgba(139, 131, 120, 0.7)',
-                  //   background:'rgba(250, 250, 255)',
-                  //   borderRadius: '10px',
-                  //   width:'600px' 
-                  //   }}
                     > 
                     <div style={{display:'flex', flexDirection:'row', alignItems:'flex-end'}}>
                       <h1 className="mt-6 text-center text-4xl" style={{color:'#e6bfb3'}}>Prompt</h1>
